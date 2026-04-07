@@ -17,3 +17,7 @@ spring:
 
 server:
   port: 8080
+
+jwt:
+  secret: commerce-secret-key-must-be-at-least-32-characters-long
+  expiration-ms: 86400000
