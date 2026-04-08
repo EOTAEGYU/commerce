@@ -62,6 +62,24 @@ src/main/kotlin/com/yourname/commerce/
 - feat(product): 상품 목록 조회 API 구현
 - fix(order): 주문 금액 계산 오류 수정
 
+## 커스텀 커맨드
+
+### `/ship [커밋 메시지]`
+테스트를 실행하고 전체 통과 시 커밋 + 푸시를 한 번에 처리한다.
+
+**실행 순서:**
+1. `./gradlew test` 실행
+2. **통과 시** → `git add -A` → `git commit -m "[커밋 메시지]"` → `git push`
+3. **실패 시** → 실패한 테스트 목록 출력 후 즉시 중단 (커밋하지 않음)
+4. **push 완료 후** → 결과 요약 출력 (통과한 테스트 수, 커밋 해시, 푸시된 브랜치)
+
+**사용 예시:**
+```
+/ship feat(product): 상품 목록 조회 API 구현
+```
+
+---
+
 ## 도메인별 CLAUDE.md
 각 도메인 폴더에 별도 CLAUDE.md를 두어 도메인 특화 규칙을 관리한다.
 
