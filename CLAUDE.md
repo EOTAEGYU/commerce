@@ -1,9 +1,9 @@
 # 프로젝트 개요
-Kotlin + Spring Boot 3 기반 일반 쇼핑몰 백엔드
+Kotlin + Spring Boot 4 기반 일반 쇼핑몰 백엔드
 
 ## 기술 스택
-- Language: Kotlin 1.9+
-- Framework: Spring Boot 3.3.x
+- Language: Kotlin "2.2.21"
+- Framework: Spring Boot "4.0.5"
 - ORM: Spring Data JPA + Hibernate
 - DB: PostgreSQL
 - Build: Gradle (Kotlin DSL)
