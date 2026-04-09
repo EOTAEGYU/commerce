@@ -36,6 +36,7 @@
 ```
 Cart (1) ──< CartItem (N)
               ├── productId
+              ├── productOptionId   ← 사이즈/컬러 옵션
               ├── quantity
               └── price (담을 당시 가격 스냅샷)
 ```

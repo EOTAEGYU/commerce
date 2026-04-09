@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
 ) {
@@ -31,6 +32,7 @@ class SecurityConfig(
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                 ).permitAll()
+                it.requestMatchers(org.springframework.http.HttpMethod.GET, "/api/categories/**").permitAll()
                 it.anyRequest().authenticated()
             }
             .exceptionHandling {

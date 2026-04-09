@@ -1,5 +1,5 @@
 # 프로젝트 개요
-Kotlin + Spring Boot 4 기반 일반 쇼핑몰 백엔드
+Kotlin + Spring Boot 4 기반 의류/신발 패션 자사몰 백엔드
 
 ## 기술 스택
 - Language: Kotlin "2.2.21"
@@ -16,9 +16,10 @@ Kotlin + Spring Boot 4 기반 일반 쇼핑몰 백엔드
 - `./gradlew test --tests "패키지.클래스명"` : 단일 테스트 실행
 
 ## 도메인 구조
-src/main/kotlin/com/yourname/commerce/
+src/main/kotlin/com/example/commerce/
 ├── user/       # 회원 (가입, 로그인, 프로필)
-├── product/    # 상품 (등록, 조회, 재고)
+├── category/   # 카테고리 (2depth 계층 구조)
+├── product/    # 상품 (등록, 조회, 옵션별 재고)
 ├── cart/       # 장바구니
 ├── order/      # 주문 (생성, 상태 관리)
 ├── payment/    # 결제 (PG 연동)
@@ -39,11 +40,12 @@ src/main/kotlin/com/yourname/commerce/
 
 ## 개발 순서 (현재 진행 중)
 1. [x] 프로젝트 초기 설정 (공통 모듈, DB 연결)
-2. [ ] 회원 도메인 (가입, 로그인, JWT)
-3. [ ] 상품 도메인 (CRUD, 재고)
-4. [ ] 장바구니
-5. [ ] 주문
-6. [ ] 결제
+2. [x] 회원 도메인 (가입, 로그인, JWT)
+3. [ ] 카테고리 도메인 (2depth 계층 구조)
+4. [ ] 상품 도메인 (CRUD, ProductOption별 재고, Pessimistic Lock)
+5. [ ] 장바구니
+6. [ ] 주문
+7. [ ] 결제
 
 ## Git 워크플로우 (IMPORTANT)
 - 기능 구현 완료 시 반드시 커밋까지 진행
@@ -112,4 +114,5 @@ src/main/kotlin/com/yourname/commerce/
 |------|------|
 | `src/main/kotlin/com/example/commerce/common/CLAUDE.md` | 공통 인프라(BaseEntity, ApiResponse, ErrorCode, CustomException) 사용법 및 주의사항 |
 | `src/main/kotlin/com/example/commerce/user/CLAUDE.md` | 회원 도메인 구조, JWT 설계, Spring Security 설정, API 엔드포인트 |
-| `src/main/kotlin/com/example/commerce/product/CLAUDE.md` | 상품 도메인 구조, 재고 관리 정책, API 엔드포인트 |
+| `src/main/kotlin/com/example/commerce/category/CLAUDE.md` | 카테고리 도메인 구조, 2depth 계층 설계, API 엔드포인트 |
+| `src/main/kotlin/com/example/commerce/product/CLAUDE.md` | 상품 도메인 구조, ProductOption 재고 관리, Pessimistic Lock, API 엔드포인트 |

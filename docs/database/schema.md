@@ -27,9 +27,24 @@
 
 ---
 
+## categories (구현 예정)
+
+상품 카테고리 테이블. 2depth 자기 참조 구조.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `id` | BIGINT | PK, AUTO INCREMENT | 카테고리 ID |
+| `name` | VARCHAR | NOT NULL | 카테고리명 |
+| `parent_id` | BIGINT | FK(categories), NULL 허용 | 부모 카테고리 (null이면 대분류) |
+| `display_order` | INT | NOT NULL, DEFAULT 0 | 정렬 순서 |
+| `created_at` | TIMESTAMP | NOT NULL | |
+| `updated_at` | TIMESTAMP | NOT NULL | |
+
+---
+
 ## products (구현 예정)
 
-상품 테이블.
+상품 테이블. 재고는 product_options에서 관리.
 
 | 컬럼 | 타입 | 제약 | 설명 |
 |------|------|------|------|
@@ -37,8 +52,23 @@
 | `name` | VARCHAR | NOT NULL | 상품명 |
 | `description` | TEXT | | 상품 설명 |
 | `price` | BIGINT | NOT NULL | 가격 (원 단위) |
+| `category_id` | BIGINT | NOT NULL, FK(categories) | 카테고리 ID |
+| `created_at` | TIMESTAMP | NOT NULL | |
+| `updated_at` | TIMESTAMP | NOT NULL | |
+
+---
+
+## product_options (구현 예정)
+
+상품 옵션(사이즈+컬러 조합) 및 재고 테이블.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `id` | BIGINT | PK, AUTO INCREMENT | 옵션 ID |
+| `product_id` | BIGINT | NOT NULL, FK(products) | 상품 ID |
+| `size` | VARCHAR | NOT NULL | 사이즈 (S/M/L/XL 등) |
+| `color` | VARCHAR | NOT NULL | 컬러 (블랙/화이트 등) |
 | `stock` | INT | NOT NULL | 재고 수량 |
-| `seller_id` | BIGINT | NOT NULL, FK(users) | 판매자 ID |
 | `created_at` | TIMESTAMP | NOT NULL | |
 | `updated_at` | TIMESTAMP | NOT NULL | |
 
@@ -47,21 +77,25 @@
 ## 엔티티 관계도 (현재 → 예정)
 
 ```
-users
+categories
   │
-  ├──< products (seller_id)          1:N — 한 판매자가 여러 상품
+  └──< products (category_id)        N:1 — 상품은 하나의 소분류에 속함
+          │
+          └──< product_options        1:N — 상품은 여러 옵션(사이즈/컬러)을 가짐
+
+users
   │
   ├──< orders (user_id)              1:N — 한 회원이 여러 주문
   │       │
   │       └──< order_items           1:N — 한 주문에 여러 상품
-  │               │
-  │               └── products (FK)
+  │               ├── products (FK)
+  │               └── product_options (FK)
   │
   ├── carts (user_id)                1:1 — 회원당 장바구니 1개
   │       │
   │       └──< cart_items
-  │               │
-  │               └── products (FK)
+  │               ├── products (FK)
+  │               └── product_options (FK)
   │
   └──< payments (order_id)           1:1 — 주문당 결제 1건
 ```

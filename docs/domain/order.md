@@ -54,7 +54,9 @@ Order
 ├── totalAmount (Long)
 └──< OrderItem
         ├── productId
+        ├── productOptionId       ← 사이즈/컬러 옵션
         ├── productName (스냅샷)
+        ├── optionInfo (스냅샷)   ← "M / 블랙" 형태로 고정
         ├── price (스냅샷)
         └── quantity
 ```
