@@ -24,4 +24,8 @@ enum class ErrorCode(
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다."),
     PRODUCT_OPTION_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상품 옵션입니다."),
     OUT_OF_STOCK(HttpStatus.CONFLICT, "재고가 부족합니다."),
+
+    // Cart
+    CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 장바구니 항목입니다."),
+    CART_ITEM_NOT_OWNED(HttpStatus.FORBIDDEN, "본인의 장바구니 항목이 아닙니다."),
 }
