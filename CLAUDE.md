@@ -41,11 +41,11 @@ src/main/kotlin/com/example/commerce/
 ## 개발 순서 (현재 진행 중)
 1. [x] 프로젝트 초기 설정 (공통 모듈, DB 연결)
 2. [x] 회원 도메인 (가입, 로그인, JWT)
-3. [ ] 카테고리 도메인 (2depth 계층 구조)
-4. [ ] 상품 도메인 (CRUD, ProductOption별 재고, Pessimistic Lock)
-5. [ ] 장바구니
-6. [ ] 주문
-7. [ ] 결제
+3. [x] 카테고리 도메인 (2depth 계층 구조)
+4. [x] 상품 도메인 (CRUD, ProductOption별 재고, Pessimistic Lock)
+5. [x] 장바구니 (Cart/CartItem, CRUD, 재고 확인)
+6. [x] 주문 (Order/OrderItem, 재고 차감/복원, 스냅샷)
+7. [x] 결제 (PG Mock, 결제 실패 시 재고 복원, 10분 만료 스케줄러)
 
 ## Git 워크플로우 (IMPORTANT)
 - 기능 구현 완료 시 반드시 커밋까지 진행
@@ -116,3 +116,6 @@ src/main/kotlin/com/example/commerce/
 | `src/main/kotlin/com/example/commerce/user/CLAUDE.md` | 회원 도메인 구조, JWT 설계, Spring Security 설정, API 엔드포인트 |
 | `src/main/kotlin/com/example/commerce/category/CLAUDE.md` | 카테고리 도메인 구조, 2depth 계층 설계, API 엔드포인트 |
 | `src/main/kotlin/com/example/commerce/product/CLAUDE.md` | 상품 도메인 구조, ProductOption 재고 관리, Pessimistic Lock, API 엔드포인트 |
+| `src/main/kotlin/com/example/commerce/cart/CLAUDE.md` | 장바구니 도메인 구조, 재고 확인 방식, API 엔드포인트 |
+| `src/main/kotlin/com/example/commerce/order/CLAUDE.md` | 주문 도메인 구조, 상태 전이, 재고 처리, 10분 만료 정책, API 엔드포인트 |
+| `src/main/kotlin/com/example/commerce/payment/CLAUDE.md` | 결제 도메인 구조, Mock PG 동작, 실패 처리 흐름, API 엔드포인트 |

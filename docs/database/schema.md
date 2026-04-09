@@ -27,7 +27,7 @@
 
 ---
 
-## categories (구현 예정)
+## categories
 
 상품 카테고리 테이블. 2depth 자기 참조 구조.
 
@@ -42,7 +42,7 @@
 
 ---
 
-## products (구현 예정)
+## products
 
 상품 테이블. 재고는 product_options에서 관리.
 
@@ -58,7 +58,7 @@
 
 ---
 
-## product_options (구현 예정)
+## product_options
 
 상품 옵션(사이즈+컬러 조합) 및 재고 테이블.
 
@@ -74,34 +74,112 @@
 
 ---
 
-## 엔티티 관계도 (현재 → 예정)
+## carts
+
+회원당 1개 장바구니. 주문 완료 시 아이템 비워짐.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `id` | BIGINT | PK, AUTO INCREMENT | 장바구니 ID |
+| `user_id` | BIGINT | NOT NULL, UNIQUE | 회원 ID (1:1) |
+| `created_at` | TIMESTAMP | NOT NULL | |
+| `updated_at` | TIMESTAMP | NOT NULL | |
+
+---
+
+## cart_items
+
+장바구니에 담긴 상품 항목.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `id` | BIGINT | PK, AUTO INCREMENT | 항목 ID |
+| `cart_id` | BIGINT | NOT NULL, FK(carts) | 장바구니 ID |
+| `product_id` | BIGINT | NOT NULL | 상품 ID |
+| `product_option_id` | BIGINT | NOT NULL | 옵션 ID (사이즈/컬러) |
+| `quantity` | INT | NOT NULL | 수량 |
+| `price` | BIGINT | NOT NULL | 담을 당시 가격 스냅샷 |
+| `created_at` | TIMESTAMP | NOT NULL | |
+| `updated_at` | TIMESTAMP | NOT NULL | |
+
+---
+
+## orders
+
+주문 헤더 테이블.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `id` | BIGINT | PK, AUTO INCREMENT | 주문 ID |
+| `user_id` | BIGINT | NOT NULL | 회원 ID |
+| `status` | VARCHAR | NOT NULL | 주문 상태 (`PENDING`, `PAID`, `SHIPPING`, `DELIVERED`, `CANCELLED`) |
+| `total_amount` | BIGINT | NOT NULL | 주문 총액 (원 단위) |
+| `created_at` | TIMESTAMP | NOT NULL | 주문 시각 (10분 만료 기준) |
+| `updated_at` | TIMESTAMP | NOT NULL | |
+
+---
+
+## order_items
+
+주문 시점 상품 스냅샷 테이블. 이후 상품 정보 변경에 영향받지 않음.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `id` | BIGINT | PK, AUTO INCREMENT | 항목 ID |
+| `order_id` | BIGINT | NOT NULL, FK(orders) | 주문 ID |
+| `product_id` | BIGINT | NOT NULL | 상품 ID (참조용) |
+| `product_option_id` | BIGINT | NOT NULL | 옵션 ID (참조용) |
+| `product_name` | VARCHAR | NOT NULL | 주문 시점 상품명 스냅샷 |
+| `option_info` | VARCHAR | NOT NULL | 주문 시점 옵션 정보 스냅샷 ("M / 블랙") |
+| `price` | BIGINT | NOT NULL | 주문 시점 가격 스냅샷 |
+| `quantity` | INT | NOT NULL | 수량 |
+| `created_at` | TIMESTAMP | NOT NULL | |
+| `updated_at` | TIMESTAMP | NOT NULL | |
+
+---
+
+## payments
+
+결제 내역 테이블. 주문당 1건.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `id` | BIGINT | PK, AUTO INCREMENT | 결제 ID |
+| `order_id` | BIGINT | NOT NULL, UNIQUE, FK(orders) | 주문 ID (1:1) |
+| `user_id` | BIGINT | NOT NULL | 회원 ID |
+| `amount` | BIGINT | NOT NULL | 결제 금액 |
+| `method` | VARCHAR | NOT NULL | 결제 수단 (`CARD`, `BANK_TRANSFER`) |
+| `status` | VARCHAR | NOT NULL | 결제 상태 (`REQUESTED`, `COMPLETED`, `FAILED`, `REFUNDED`) |
+| `pg_transaction_id` | VARCHAR | | PG사 거래 ID (성공 시 저장) |
+| `created_at` | TIMESTAMP | NOT NULL | |
+| `updated_at` | TIMESTAMP | NOT NULL | |
+
+---
+
+## 엔티티 관계도
 
 ```
 categories
   │
-  └──< products (category_id)        N:1 — 상품은 하나의 소분류에 속함
+  └──< products (category_id)              N:1 — 상품은 하나의 소분류에 속함
           │
-          └──< product_options        1:N — 상품은 여러 옵션(사이즈/컬러)을 가짐
+          └──< product_options             1:N — 상품은 여러 옵션(사이즈/컬러)을 가짐
 
 users
   │
-  ├──< orders (user_id)              1:N — 한 회원이 여러 주문
+  ├──< orders (user_id)                   1:N — 한 회원이 여러 주문
   │       │
-  │       └──< order_items           1:N — 한 주문에 여러 상품
-  │               ├── products (FK)
-  │               └── product_options (FK)
-  │
-  ├── carts (user_id)                1:1 — 회원당 장바구니 1개
+  │       ├──< order_items                1:N — 한 주문에 여러 상품 (스냅샷)
   │       │
-  │       └──< cart_items
-  │               ├── products (FK)
-  │               └── product_options (FK)
+  │       └── payments (order_id)         1:1 — 주문당 결제 1건
   │
-  └──< payments (order_id)           1:1 — 주문당 결제 1건
+  └── carts (user_id, UNIQUE)             1:1 — 회원당 장바구니 1개
+          │
+          └──< cart_items                 1:N — 장바구니에 여러 상품
 ```
 
 ## 주의사항
 
-- 금액 필드(`price`)는 반드시 `BIGINT` (Kotlin `Long`) — 부동소수점 오차 방지
+- 금액 필드(`price`, `total_amount`, `amount`)는 반드시 `BIGINT` (Kotlin `Long`) — 부동소수점 오차 방지
 - `ddl-auto: create-drop` 설정으로 개발 중 서버 재시작 시 스키마가 재생성됨
 - 운영 배포 시 `validate` 또는 `none`으로 변경 필요
