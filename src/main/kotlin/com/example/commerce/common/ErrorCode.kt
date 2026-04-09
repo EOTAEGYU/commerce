@@ -19,4 +19,9 @@ enum class ErrorCode(
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 카테고리입니다."),
     CATEGORY_HAS_CHILDREN(HttpStatus.CONFLICT, "하위 카테고리가 존재합니다."),
     CATEGORY_IN_USE(HttpStatus.CONFLICT, "상품이 등록된 카테고리입니다."),
+
+    // Product
+    PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상품입니다."),
+    PRODUCT_OPTION_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 상품 옵션입니다."),
+    OUT_OF_STOCK(HttpStatus.CONFLICT, "재고가 부족합니다."),
 }

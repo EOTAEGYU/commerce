@@ -2,52 +2,50 @@
 
 ## 완료
 - [x] 공통 모듈 (BaseEntity, ApiResponse, ErrorCode, CustomException, GlobalExceptionHandler)
-- [x] 회원 도메인 (가입, 로그인, JWT, Spring Security)
-- [x] 카테고리 도메인 (2depth 계층 구조, CRUD)
+- [x] 회원 도메인 (가입, 로그인, JWT, Spring Security) + 테스트
+- [x] 카테고리 도메인 (2depth 계층 구조, CRUD) + 테스트
 
 ---
 
-## 다음: 상품 도메인
+## 완료 (계속)
+- [x] 상품 도메인 (ProductOption 재고, Pessimistic Lock) + 테스트
 
-### 1. ErrorCode 추가
-- [ ] `PRODUCT_NOT_FOUND` (404)
-- [ ] `PRODUCT_OPTION_NOT_FOUND` (404)
-- [ ] `OUT_OF_STOCK` (409)
+---
 
-### 2. Product Entity
-- [ ] `Product` 엔티티 (name, description, price: Long, categoryId: Long)
-- [ ] `ProductOption` 엔티티 (product, size, color, stock: Int)
+## 다음: 장바구니 도메인
 
-### 3. Repository
-- [ ] `ProductRepository`
-- [ ] `ProductOptionRepository` (`@Lock(PESSIMISTIC_WRITE)` findByIdWithLock 포함)
+### 1. CartItem Entity
+- [ ] `Cart` 엔티티 (userId)
+- [ ] `CartItem` 엔티티 (cart, productId, productOptionId, quantity, price)
 
-### 4. ProductService
-- [ ] 상품 등록 (옵션 포함)
-- [ ] 상품 목록 조회 (페이징, 카테고리 필터)
-- [ ] 상품 단건 조회 (옵션 목록 포함)
-- [ ] 상품 수정
-- [ ] 상품 삭제
-- [ ] `decreaseStock` (Pessimistic Lock)
-- [ ] `increaseStock` (주문 취소용)
+### 2. Repository
+- [ ] `CartRepository`
+- [ ] `CartItemRepository`
 
-### 5. ProductController
-- [ ] `POST /api/products` (ADMIN)
-- [ ] `GET /api/products` (공개)
-- [ ] `GET /api/products/{id}` (공개)
-- [ ] `PUT /api/products/{id}` (ADMIN)
-- [ ] `DELETE /api/products/{id}` (ADMIN)
+### 3. CartService
+- [ ] 장바구니 조회
+- [ ] 상품 추가 (optionId 포함, 재고 확인)
+- [ ] 수량 변경
+- [ ] 아이템 삭제
 
-### 6. SecurityConfig 업데이트
-- [ ] GET `/api/products/**` → 인증 불필요
+### 4. CartController
+- [ ] `GET /api/cart` (인증 필요)
+- [ ] `POST /api/cart/items` (인증 필요)
+- [ ] `PUT /api/cart/items/{id}` (인증 필요)
+- [ ] `DELETE /api/cart/items/{id}` (인증 필요)
 
-### 7. 마무리
+### 5. 테스트 코드
+- [ ] `CartServiceTest`
+- [ ] `CartRepositoryTest`
+- [ ] `CartControllerTest`
+
+### 6. 마무리
+- [ ] `./gradlew test` 전체 통과 확인
 - [ ] `./gradlew build` 확인
 - [ ] 커밋
 
 ---
 
 ## 이후 예정
-- [ ] 장바구니 (optionId 포함)
 - [ ] 주문
 - [ ] 결제

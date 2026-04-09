@@ -33,6 +33,7 @@ class SecurityConfig(
                     "/v3/api-docs/**",
                 ).permitAll()
                 it.requestMatchers(org.springframework.http.HttpMethod.GET, "/api/categories/**").permitAll()
+                it.requestMatchers(org.springframework.http.HttpMethod.GET, "/api/products/**").permitAll()
                 it.anyRequest().authenticated()
             }
             .exceptionHandling {
