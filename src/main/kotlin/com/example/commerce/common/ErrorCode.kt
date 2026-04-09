@@ -28,4 +28,10 @@ enum class ErrorCode(
     // Cart
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 장바구니 항목입니다."),
     CART_ITEM_NOT_OWNED(HttpStatus.FORBIDDEN, "본인의 장바구니 항목이 아닙니다."),
+
+    // Order
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주문입니다."),
+    ORDER_NOT_OWNED(HttpStatus.FORBIDDEN, "본인의 주문이 아닙니다."),
+    ORDER_CANNOT_CANCEL(HttpStatus.CONFLICT, "취소할 수 없는 주문 상태입니다."),
+    CART_EMPTY(HttpStatus.BAD_REQUEST, "장바구니가 비어 있습니다."),
 }

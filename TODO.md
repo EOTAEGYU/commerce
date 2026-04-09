@@ -12,40 +12,36 @@
 
 ---
 
-## 다음: 장바구니 도메인
-
-### 1. CartItem Entity
-- [ ] `Cart` 엔티티 (userId)
-- [ ] `CartItem` 엔티티 (cart, productId, productOptionId, quantity, price)
-
-### 2. Repository
-- [ ] `CartRepository`
-- [ ] `CartItemRepository`
-
-### 3. CartService
-- [ ] 장바구니 조회
-- [ ] 상품 추가 (optionId 포함, 재고 확인)
-- [ ] 수량 변경
-- [ ] 아이템 삭제
-
-### 4. CartController
-- [ ] `GET /api/cart` (인증 필요)
-- [ ] `POST /api/cart/items` (인증 필요)
-- [ ] `PUT /api/cart/items/{id}` (인증 필요)
-- [ ] `DELETE /api/cart/items/{id}` (인증 필요)
-
-### 5. 테스트 코드
-- [ ] `CartServiceTest`
-- [ ] `CartRepositoryTest`
-- [ ] `CartControllerTest`
-
-### 6. 마무리
-- [ ] `./gradlew test` 전체 통과 확인
-- [ ] `./gradlew build` 확인
-- [ ] 커밋
+## 완료 (계속)
+- [x] 장바구니 도메인 (Cart/CartItem, CRUD, 재고 확인) + 테스트
 
 ---
 
-## 이후 예정
-- [ ] 주문
-- [ ] 결제
+## 완료 (계속)
+- [x] 주문 도메인 (Order/OrderItem, CRUD, 재고 차감/복원, 스냅샷) + 테스트
+
+---
+
+## 이후 예정: 결제 도메인
+
+### 1. Entity
+- [ ] `PaymentMethod` enum (CARD, BANK_TRANSFER 등)
+- [ ] `PaymentStatus` enum (REQUESTED, COMPLETED, FAILED, REFUNDED)
+- [ ] `Payment` 엔티티 (orderId, userId, amount, method, status, pgTransactionId)
+
+### 2. PaymentService
+- [ ] 결제 요청 (PENDING 주문만 가능, PG 연동 Mock)
+- [ ] 결제 성공 처리 → Order 상태 PAID 변경
+- [ ] 결제 실패 처리 → 재고 복원 + Order 상태 CANCELLED 변경
+
+### 3. PaymentController
+- [ ] `POST /api/payments` (인증 필요)
+
+### 4. 테스트 코드
+- [ ] `PaymentServiceTest`
+- [ ] `PaymentControllerTest`
+
+### 5. 마무리
+- [ ] `./gradlew test` 전체 통과 확인
+- [ ] `./gradlew build` 확인
+- [ ] 커밋
