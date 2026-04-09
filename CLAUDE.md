@@ -72,6 +72,17 @@ src/main/kotlin/com/yourname/commerce/
 
 ---
 
+## 프로젝트 문서 (docs/)
+코드 설계 의도, 아키텍처, 개발 가이드를 담은 문서 모음. API 상세 스펙은 Swagger UI 참조.
+
+| 경로 | 내용 |
+|------|------|
+| `docs/architecture/` | 시스템 개요, 레이어 아키텍처, JWT 보안 설계 |
+| `docs/api/` | API 공통 규칙, 전체 엔드포인트 목록 |
+| `docs/database/` | 엔티티 필드 정의, 관계도 |
+| `docs/domain/` | 도메인별 비즈니스 규칙 및 유스케이스 |
+| `docs/development/` | 로컬 세팅, 코드 컨벤션, 에러 코드 목록 |
+
 ## 도메인별 CLAUDE.md
 각 도메인 폴더에 별도 CLAUDE.md를 두어 도메인 특화 규칙을 관리한다.
 
