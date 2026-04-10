@@ -29,15 +29,14 @@
 ## 진행 예정 — 프론트엔드 구축
 
 ### 1단계: 프로젝트 초기 설정
-- [ ] Next.js 앱 생성 (`apps/web/`)
-  - `npx create-next-app apps/web --typescript --tailwind --app`
-- [ ] 의존성 설치 (React Query, Zustand, openapi-typescript)
-- [ ] 환경변수 설정 (`.env.local` — `NEXT_PUBLIC_API_URL`)
-- [ ] Swagger에서 타입 생성 (`npm run generate:types`)
-- [ ] 공통 타입 파일 작성 (`src/types/api.ts` — ApiResponse, PageResponse 래퍼)
-- [ ] API 클라이언트 작성 (`src/lib/api/client.ts` — fetch 래퍼, 토큰 자동 첨부)
-- [ ] React Query QueryClient 설정 및 Provider 연결
-- [ ] Zustand 인증 스토어 작성 (`src/store/auth.ts` — persist 미들웨어)
+- [x] Next.js 앱 생성 (`apps/web/`) — Next.js 16.2.3, Turbopack
+- [x] 의존성 설치 (@tanstack/react-query 5, zustand 5, react-query-devtools)
+- [x] 환경변수 설정 (`.env.local` — `NEXT_PUBLIC_API_URL=http://localhost:8080`)
+- [ ] Swagger에서 타입 생성 (`npm run generate:types`) — 백엔드 기동 후 실행
+- [x] 공통 타입 파일 작성 (`src/types/api.ts` — ApiResponse, PageResponse 래퍼)
+- [x] API 클라이언트 작성 (`src/lib/api/client.ts` — apiFetch, ApiError, JWT 자동 첨부)
+- [x] React Query QueryClient 설정 및 Provider 연결 (`src/providers/QueryProvider.tsx`)
+- [x] Zustand 인증 스토어 작성 (`src/store/auth.ts` — persist + skipHydration)
 
 ### 2단계: 레이아웃 및 공통 컴포넌트
 - [ ] 루트 레이아웃 (`app/layout.tsx`) — Header, Footer 포함

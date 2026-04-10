@@ -1,7 +1,9 @@
 # 프로젝트 개요
-Kotlin + Spring Boot 4 기반 의류/신발 패션 자사몰 백엔드
+Kotlin + Spring Boot 4 기반 의류/신발 패션 자사몰 (백엔드 + 프론트엔드 풀스택)
 
 ## 기술 스택
+
+### 백엔드 (`apps/api/`)
 - Language: Kotlin "2.2.21"
 - Framework: Spring Boot "4.0.5"
 - ORM: Spring Data JPA + Hibernate
@@ -9,11 +11,26 @@ Kotlin + Spring Boot 4 기반 의류/신발 패션 자사몰 백엔드
 - Build: Gradle (Kotlin DSL)
 - Auth: Spring Security + JWT
 
+### 프론트엔드 (`apps/web/`)
+- Framework: Next.js 16.2.3 (App Router, Turbopack)
+- Language: TypeScript 5
+- Styling: Tailwind CSS 4
+- 서버 상태: TanStack Query 5
+- 클라이언트 상태: Zustand 5
+- 타입 생성: openapi-typescript 7
+
 ## 주요 명령어
+
+### 백엔드
 - `./gradlew bootRun` : 개발 서버 실행
 - `./gradlew test` : 전체 테스트 실행
 - `./gradlew build` : 빌드
 - `./gradlew test --tests "패키지.클래스명"` : 단일 테스트 실행
+
+### 프론트엔드
+- `cd apps/web && npm run dev` : 개발 서버 실행 (localhost:3000)
+- `cd apps/web && npm run build` : 프로덕션 빌드
+- `npm run generate:types` : OpenAPI → TypeScript 타입 생성 (루트에서, 백엔드 기동 필요)
 
 ## 도메인 구조
 src/main/kotlin/com/example/commerce/
@@ -110,6 +127,7 @@ src/main/kotlin/com/example/commerce/
 ## 도메인별 CLAUDE.md
 각 도메인 폴더에 별도 CLAUDE.md를 두어 도메인 특화 규칙을 관리한다.
 
+### 백엔드
 | 경로 | 내용 |
 |------|------|
 | `src/main/kotlin/com/example/commerce/common/CLAUDE.md` | 공통 인프라(BaseEntity, ApiResponse, ErrorCode, CustomException) 사용법 및 주의사항 |
@@ -119,3 +137,8 @@ src/main/kotlin/com/example/commerce/
 | `src/main/kotlin/com/example/commerce/cart/CLAUDE.md` | 장바구니 도메인 구조, 재고 확인 방식, API 엔드포인트 |
 | `src/main/kotlin/com/example/commerce/order/CLAUDE.md` | 주문 도메인 구조, 상태 전이, 재고 처리, 10분 만료 정책, API 엔드포인트 |
 | `src/main/kotlin/com/example/commerce/payment/CLAUDE.md` | 결제 도메인 구조, Mock PG 동작, 실패 처리 흐름, API 엔드포인트 |
+
+### 프론트엔드
+| 경로 | 내용 |
+|------|------|
+| `apps/web/CLAUDE.md` | 프론트엔드 아키텍처, 파일 구조, API 클라이언트, 상태 관리, 코드 컨벤션 |
