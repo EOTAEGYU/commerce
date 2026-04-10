@@ -1,0 +1,10 @@
+{
+  "name": "commerce",
+  "private": true,
+  "scripts": {
+    "generate:types": "openapi-typescript http://localhost:8080/v3/api-docs -o apps/web/src/types/api.generated.ts"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.4.4"
+  }
+}

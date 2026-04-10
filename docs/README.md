@@ -27,6 +27,11 @@ Kotlin + Spring Boot 4 기반 커머스 백엔드 프로젝트 문서 모음입�
 - [코드 컨벤션](development/conventions.md) — 코딩 스타일, 커밋 규칙
 - [에러 코드 목록](development/error-codes.md) — 전체 ErrorCode 정의
 
+### Frontend
+- [기술 스택](frontend/stack.md) — Next.js, TypeScript, Tailwind, React Query, Zustand
+- [아키텍처](frontend/architecture.md) — 폴더 구조, 라우팅 전략, 상태 관리, API 클라이언트
+- [타입 자동 생성](frontend/type-generation.md) — Swagger → TypeScript 타입 생성 파이프라인
+
 ## 빠른 참조
 
 | 항목 | 위치 |
