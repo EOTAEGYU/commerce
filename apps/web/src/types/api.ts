@@ -28,4 +28,4 @@ export type PageResponse<T> = {
 // ─── 자동 생성 타입 재수출 ─────────────────────────────────────────────────────
 // api.generated.ts는 `npm run generate:types`로 생성됨 (직접 수정 금지)
 // 백엔드 미기동 상태에서는 이 파일이 없으므로 타입 생성 후 아래 주석 해제
-// export type { components } from './api.generated'
+export type { components } from './api.generated'
