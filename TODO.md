@@ -14,6 +14,6 @@
 ---
 
 ## 프론트 연동 전 정비 (백엔드)
-- [ ] ADMIN 계정 초기화 방법 마련 (data.sql로 초기 ADMIN 계정 삽입)
-- [ ] 상품 이미지 URL 필드 추가 (Product 엔티티 + DTO + 테스트)
-- [ ] ddl-auto를 create-drop → update 로 변경
+- [x] ADMIN 계정 초기화 방법 마련 (DataInitializer: admin@commerce.com / admin1234)
+- [x] 상품 이미지 URL 필드 추가 (Product 엔티티 + DTO + 테스트)
+- [x] ddl-auto를 create-drop → update 로 변경
