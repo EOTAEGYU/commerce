@@ -46,7 +46,7 @@ class ProductControllerTest {
     private val optionResponse = ProductOptionResponse(id = 1L, size = "M", color = "블랙", stock = 10)
     private val productResponse = ProductResponse(
         id = 1L, name = "테스트 상품", description = "설명", price = 10000L, categoryId = 1L,
-        options = listOf(optionResponse),
+        imageUrl = null, options = listOf(optionResponse),
     )
 
     private fun adminAuth() = authentication(

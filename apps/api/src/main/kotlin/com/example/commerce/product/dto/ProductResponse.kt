@@ -9,6 +9,7 @@ data class ProductResponse(
     val description: String?,
     val price: Long,
     val categoryId: Long,
+    val imageUrl: String?,
     val options: List<ProductOptionResponse>,
 ) {
     companion object {
@@ -18,6 +19,7 @@ data class ProductResponse(
             description = product.description,
             price = product.price,
             categoryId = product.categoryId,
+            imageUrl = product.imageUrl,
             options = product.options.map { ProductOptionResponse.from(it) },
         )
     }

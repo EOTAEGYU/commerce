@@ -16,6 +16,8 @@ data class ProductCreateRequest(
 
     val categoryId: Long,
 
+    val imageUrl: String? = null,
+
     @field:NotEmpty
     @field:Valid
     val options: List<ProductOptionRequest>,

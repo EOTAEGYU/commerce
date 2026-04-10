@@ -18,6 +18,9 @@ class Product(
     @Column(nullable = false)
     var categoryId: Long,
 
+    @Column
+    var imageUrl: String? = null,
+
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
     val options: MutableList<ProductOption> = mutableListOf(),
 

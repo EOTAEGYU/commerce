@@ -31,6 +31,7 @@ class ProductService(
             description = request.description,
             price = request.price,
             categoryId = request.categoryId,
+            imageUrl = request.imageUrl,
         )
         request.options.forEach { opt ->
             product.options.add(ProductOption(product = product, size = opt.size, color = opt.color, stock = opt.stock))
@@ -62,6 +63,7 @@ class ProductService(
         product.description = request.description
         product.price = request.price
         product.categoryId = request.categoryId
+        product.imageUrl = request.imageUrl
         return ProductResponse.from(product)
     }
 

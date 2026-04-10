@@ -13,4 +13,6 @@ data class ProductUpdateRequest(
     val price: Long,
 
     val categoryId: Long,
+
+    val imageUrl: String? = null,
 )
