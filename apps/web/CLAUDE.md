@@ -19,20 +19,29 @@ Next.js 16 (App Router) 기반 패션 자사몰 프론트엔드
 ```
 src/
 ├── app/                   # Next.js App Router 페이지
-│   ├── (shop)/            # 일반 사용자 — 상품, 장바구니, 주문 (3~4단계)
-│   ├── (auth)/            # 인증
+│   ├── (auth)/            # 인증 라우트 그룹
 │   │   ├── signin/page.tsx  # 로그인 페이지
 │   │   └── signup/page.tsx  # 회원가입 페이지
+│   ├── products/
+│   │   └── [id]/page.tsx  # 상품 상세 (SSR)
 │   ├── admin/             # 관리자 전용 (5단계)
 │   ├── layout.tsx         # 루트 레이아웃 (Header + main + Footer)
-│   ├── page.tsx           # 홈 (3단계에서 상품 목록으로 교체 예정)
+│   ├── page.tsx           # 상품 목록 (SSR, 카테고리 필터, 페이지네이션)
 │   └── providers.tsx      # Provider 조합 (QueryProvider + AuthHydration)
 ├── components/
+│   ├── products/          # 상품 관련 컴포넌트
+│   │   ├── ProductCard.tsx        # 상품 카드 (서버)
+│   │   ├── ProductGrid.tsx        # 상품 그리드 (서버)
+│   │   ├── CategoryFilter.tsx     # 카테고리 pill 필터 (클라이언트)
+│   │   ├── PaginationBar.tsx      # 페이지네이션 (클라이언트)
+│   │   ├── ProductOptionPicker.tsx  # 옵션 선택 (클라이언트)
+│   │   └── AddToCartButton.tsx    # 장바구니 담기 mutation (클라이언트)
 │   ├── Header.tsx         # 상단 네비 (카테고리/장바구니/인증)
 │   └── Footer.tsx         # 하단 바
 ├── lib/
 │   └── api/
-│       └── client.ts      # apiFetch(), ApiError
+│       ├── client.ts      # apiFetch(), ApiError (클라이언트 전용)
+│       └── server.ts      # serverFetch() (서버 컴포넌트 전용)
 ├── providers/
 │   └── QueryProvider.tsx  # TanStack Query Provider
 ├── store/
@@ -42,12 +51,20 @@ src/
     └── api.generated.ts   # 자동 생성 타입 (git 제외, 직접 수정 금지)
 ```
 
-## API 클라이언트 (`src/lib/api/client.ts`)
-- `apiFetch<T>(path, options?)`: 모든 API 요청에 사용
+## API 클라이언트
+
+### `src/lib/api/client.ts` — 클라이언트 컴포넌트 전용
+- `apiFetch<T>(path, options?)`: 클라이언트 컴포넌트에서 모든 API 요청에 사용
   - `Authorization: Bearer {token}` 자동 첨부 (Zustand store에서 읽음)
   - 401 응답 시 자동 로그아웃 (clearAuth() 호출)
   - 실패 시 `ApiError(code, message)` throw → UI에서 code로 분기 처리 가능
 - `ApiError`: `code` (백엔드 ErrorCode), `message` 보존
+
+### `src/lib/api/server.ts` — 서버 컴포넌트 전용
+- `serverFetch<T>(path, options?)`: 서버 컴포넌트(SSR)에서 API 요청에 사용
+  - Zustand 미사용 (서버에서 실행되므로) → 공개 API 전용
+  - 실패 시 `Error` throw → 호출부에서 try/catch 또는 `notFound()` 처리
+- **주의**: 인증이 필요한 API는 서버에서 호출 불가 → 클라이언트 컴포넌트에서 `apiFetch` 사용
 
 ## 상태 관리
 
