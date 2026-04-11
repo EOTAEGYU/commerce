@@ -32,17 +32,17 @@
 - [x] Next.js 앱 생성 (`apps/web/`) — Next.js 16.2.3, Turbopack
 - [x] 의존성 설치 (@tanstack/react-query 5, zustand 5, react-query-devtools)
 - [x] 환경변수 설정 (`.env.local` — `NEXT_PUBLIC_API_URL=http://localhost:8080`)
-- [ ] Swagger에서 타입 생성 (`npm run generate:types`) — 백엔드 기동 후 실행
+- [x] Swagger에서 타입 생성 (`npm run generate:types`) — `api.generated.ts` 생성 완료
 - [x] 공통 타입 파일 작성 (`src/types/api.ts` — ApiResponse, PageResponse 래퍼)
 - [x] API 클라이언트 작성 (`src/lib/api/client.ts` — apiFetch, ApiError, JWT 자동 첨부)
 - [x] React Query QueryClient 설정 및 Provider 연결 (`src/providers/QueryProvider.tsx`)
 - [x] Zustand 인증 스토어 작성 (`src/store/auth.ts` — persist + skipHydration)
 
 ### 2단계: 레이아웃 및 공통 컴포넌트
-- [ ] 루트 레이아웃 (`app/layout.tsx`) — Header, Footer 포함
-- [ ] Header 컴포넌트 — 로고, 카테고리 네비, 장바구니 아이콘, 로그인/로그아웃
-- [ ] 카테고리 트리 렌더링 (`GET /api/categories`)
-- [ ] 로그인/회원가입 페이지 (`/signin`, `/signup`)
+- [x] 루트 레이아웃 (`app/layout.tsx`) — Header, Footer 포함
+- [x] Header 컴포넌트 — 로고, 카테고리 네비, 장바구니 아이콘, 로그인/로그아웃
+- [x] 카테고리 트리 렌더링 (`GET /api/categories`)
+- [x] 로그인/회원가입 페이지 (`/signin`, `/signup`)
 
 ### 3단계: 상품
 - [ ] 상품 목록 페이지 (`/`) — SSR, 카테고리 필터, 페이지네이션

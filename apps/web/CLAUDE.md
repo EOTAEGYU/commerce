@@ -19,11 +19,17 @@ Next.js 16 (App Router) 기반 패션 자사몰 프론트엔드
 ```
 src/
 ├── app/                   # Next.js App Router 페이지
-│   ├── (shop)/            # 일반 사용자 — 상품, 장바구니, 주문
-│   ├── (auth)/            # 인증 — 로그인, 회원가입
-│   ├── admin/             # 관리자 전용
-│   ├── layout.tsx         # 루트 레이아웃 (Providers 포함)
-│   └── providers.tsx      # Provider 조합 파일
+│   ├── (shop)/            # 일반 사용자 — 상품, 장바구니, 주문 (3~4단계)
+│   ├── (auth)/            # 인증
+│   │   ├── signin/page.tsx  # 로그인 페이지
+│   │   └── signup/page.tsx  # 회원가입 페이지
+│   ├── admin/             # 관리자 전용 (5단계)
+│   ├── layout.tsx         # 루트 레이아웃 (Header + main + Footer)
+│   ├── page.tsx           # 홈 (3단계에서 상품 목록으로 교체 예정)
+│   └── providers.tsx      # Provider 조합 (QueryProvider + AuthHydration)
+├── components/
+│   ├── Header.tsx         # 상단 네비 (카테고리/장바구니/인증)
+│   └── Footer.tsx         # 하단 바
 ├── lib/
 │   └── api/
 │       └── client.ts      # apiFetch(), ApiError
@@ -32,7 +38,7 @@ src/
 ├── store/
 │   └── auth.ts            # Zustand 인증 스토어
 └── types/
-    ├── api.ts             # ApiResponse<T>, PageResponse<T>
+    ├── api.ts             # ApiResponse<T>, PageResponse<T>, components re-export
     └── api.generated.ts   # 자동 생성 타입 (git 제외, 직접 수정 금지)
 ```
 
@@ -63,6 +69,13 @@ src/
 - Next.js 15+는 기본 fetch 캐싱 없음 → 캐싱 필요 시 `{ next: { revalidate: N } }` 명시
 - Tailwind 4: `@import "tailwindcss"` 방식 사용 (`tailwind.config.js` 없음)
 - 금액 표시: `toLocaleString('ko-KR')` 원 단위 정수 포맷
+
+## 인증 흐름
+1. `/signin` → `POST /api/users/signin` → `accessToken` 획득
+2. `GET /api/users/me` (Authorization 헤더 직접 첨부) → user 정보 획득
+3. `setAuth(token, user)` → Zustand persist로 localStorage 저장
+4. `providers.tsx`의 `AuthHydration`이 마운트 시 `rehydrate()` 호출 → 새로고침 후에도 로그인 유지
+5. 401 응답 → `apiFetch` 내부에서 자동 `clearAuth()` 호출
 
 ## 백엔드 연동 주의사항
 - 개발 서버 포트: **3000** (백엔드 CORS가 localhost:3000 허용)
