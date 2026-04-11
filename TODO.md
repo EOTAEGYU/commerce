@@ -51,11 +51,11 @@
 - [x] DataInitializer 샘플 데이터 추가 (카테고리 3개/8개, 상품 14개)
 
 ### 4단계: 장바구니 · 주문 · 결제
-- [ ] 장바구니 페이지 (`/cart`) — 목록, 수량 변경, 삭제, 주문하기
-- [ ] 주문 생성 (`POST /api/orders`)
-- [ ] 주문 내역 페이지 (`/orders`)
-- [ ] 결제 페이지 (`/orders/[id]`) — 결제 수단 선택, `POST /api/payments`
-- [ ] 주문 취소 (`POST /api/orders/{id}/cancel`)
+- [x] 장바구니 페이지 (`/cart`) — 목록, 수량 변경, 삭제, 주문하기
+- [x] 주문 생성 (`POST /api/orders`)
+- [x] 주문 내역 페이지 (`/orders`)
+- [x] 결제 페이지 (`/orders/[id]`) — 결제 수단 선택, `POST /api/payments`
+- [x] 주문 취소 (`POST /api/orders/{id}/cancel`)
 
 ### 5단계: 관리자 페이지
 - [ ] ADMIN 전용 레이아웃 — 역할 체크 미들웨어

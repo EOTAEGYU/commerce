@@ -24,6 +24,11 @@ src/
 │   │   └── signup/page.tsx  # 회원가입 페이지
 │   ├── products/
 │   │   └── [id]/page.tsx  # 상품 상세 (SSR)
+│   ├── cart/
+│   │   └── page.tsx       # 장바구니 (CSR)
+│   ├── orders/
+│   │   ├── page.tsx       # 주문 목록 (CSR)
+│   │   └── [id]/page.tsx  # 주문 상세 + 결제 (CSR)
 │   ├── admin/             # 관리자 전용 (5단계)
 │   ├── layout.tsx         # 루트 레이아웃 (Header + main + Footer)
 │   ├── page.tsx           # 상품 목록 (SSR, 카테고리 필터, 페이지네이션)
@@ -36,7 +41,9 @@ src/
 │   │   ├── PaginationBar.tsx      # 페이지네이션 (클라이언트)
 │   │   ├── ProductOptionPicker.tsx  # 옵션 선택 (클라이언트)
 │   │   └── AddToCartButton.tsx    # 장바구니 담기 mutation (클라이언트)
-│   ├── Header.tsx         # 상단 네비 (카테고리/장바구니/인증)
+│   ├── cart/
+│   │   └── CartItemRow.tsx        # 장바구니 아이템 행 (클라이언트)
+│   ├── Header.tsx         # 상단 네비 (카테고리/주문내역/장바구니/인증)
 │   └── Footer.tsx         # 하단 바
 ├── lib/
 │   └── api/

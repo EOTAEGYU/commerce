@@ -70,6 +70,16 @@ export default function Header() {
 
         {/* 우측 영역 */}
         <div className="ml-auto flex items-center gap-3">
+          {/* 주문내역 */}
+          {user && (
+            <Link
+              href="/orders"
+              className="rounded px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-100"
+            >
+              주문내역
+            </Link>
+          )}
+
           {/* 장바구니 */}
           <Link href="/cart" className="relative rounded p-2 hover:bg-zinc-100">
             <svg

@@ -15,6 +15,12 @@ apps/web/
 │   │   ├── products/
 │   │   │   └── [id]/
 │   │   │       └── page.tsx   # /products/[id] — 상품 상세 (SSR)
+│   │   ├── cart/
+│   │   │   └── page.tsx       # /cart — 장바구니 (CSR)
+│   │   ├── orders/
+│   │   │   ├── page.tsx       # /orders — 주문 내역 (CSR)
+│   │   │   └── [id]/
+│   │   │       └── page.tsx   # /orders/[id] — 주문 상세 + 결제 (CSR)
 │   │   ├── admin/             # 관리자 (ADMIN 역할 전용, 5단계)
 │   │   │   ├── products/
 │   │   │   │   └── page.tsx   # 상품 관리
@@ -31,7 +37,9 @@ apps/web/
 │   │   │   ├── PaginationBar.tsx      # 페이지네이션 (클라이언트)
 │   │   │   ├── ProductOptionPicker.tsx  # 옵션 선택 (클라이언트)
 │   │   │   └── AddToCartButton.tsx    # 장바구니 담기 mutation (클라이언트)
-│   │   ├── Header.tsx         # 상단 네비 (카테고리 / 장바구니 뱃지 / 인증)
+│   │   ├── cart/
+│   │   │   └── CartItemRow.tsx        # 장바구니 아이템 행 — 수량변경/삭제 (클라이언트)
+│   │   ├── Header.tsx         # 상단 네비 (카테고리 / 주문내역 / 장바구니 뱃지 / 인증)
 │   │   └── Footer.tsx         # 하단 바
 │   ├── lib/
 │   │   └── api/
@@ -54,9 +62,9 @@ apps/web/
 | `/` | SSR | 불필요 | 상품 목록, 카테고리 필터, 페이지네이션 |
 | `/products/[id]` | SSR | 불필요 | 상품 상세, 옵션 선택, 장바구니 담기 버튼 |
 | `/signin`, `/signup` | CSR | 불필요 | 로그인/회원가입 폼 |
-| `/cart` | CSR | 필요 | 장바구니 목록, 수량 변경, 주문하기 (4단계) |
-| `/orders` | CSR | 필요 | 내 주문 내역 (4단계) |
-| `/orders/[id]` | CSR | 필요 | 주문 상세 + 결제 진행 (4단계) |
+| `/cart` | CSR | 필요 | 장바구니 목록, 수량 변경, 주문하기 |
+| `/orders` | CSR | 필요 | 내 주문 내역 |
+| `/orders/[id]` | CSR | 필요 | 주문 상세 + 결제 진행 + 주문 취소 |
 | `/admin/**` | CSR | ADMIN | 상품/카테고리 관리 (5단계) |
 
 ## 서버 / 클라이언트 컴포넌트 분리 원칙
@@ -112,12 +120,17 @@ API로 가져오는 데이터 (장바구니, 주문 등 클라이언트 조회).
 
 ```typescript
 // queryKey 규칙
-['categories']           // 카테고리 목록 (Header에서 사용)
+['categories']           // 카테고리 목록 (Header에서 사용, staleTime 5분)
 ['cart']                 // 장바구니 (Header 뱃지 + 장바구니 페이지)
+['product', id]          // 상품 단건 (장바구니 상품명 표시용, staleTime 5분)
+['orders']               // 주문 목록
+['order', id]            // 주문 단건 상세
+['payment', orderId]     // 결제 정보 (order.status !== 'PENDING'일 때만 enabled)
 
-// invalidation 패턴 — 장바구니 담기 성공 시
-queryClient.invalidateQueries({ queryKey: ['cart'] })
-// → Header의 ['cart'] 쿼리 자동 재조회 → 뱃지 숫자 갱신
+// setQueryData vs invalidateQueries
+// - Cart 뮤테이션: 서버가 CartResponse 전체 반환 → setQueryData로 즉시 교체
+// - 주문 취소: OrderResponse 반환 → setQueryData(['order', id]) + invalidate(['orders'])
+// - 결제 성공: invalidate(['order', id]) → 상태 변경 후 payment 쿼리 자동 활성화
 ```
 
 ## SSR 데이터 페칭 패턴
