@@ -6,9 +6,10 @@ type Props = {
   totalPages: number
   currentPage: number
   categoryId?: string
+  keyword?: string
 }
 
-export default function PaginationBar({ totalPages, currentPage, categoryId }: Props) {
+export default function PaginationBar({ totalPages, currentPage, categoryId, keyword }: Props) {
   const router = useRouter()
 
   if (totalPages <= 1) return null
@@ -16,6 +17,7 @@ export default function PaginationBar({ totalPages, currentPage, categoryId }: P
   function goToPage(page: number) {
     const params = new URLSearchParams()
     if (categoryId) params.set('categoryId', categoryId)
+    if (keyword) params.set('keyword', keyword)
     if (page > 0) params.set('page', String(page))
     const query = params.toString()
     router.push(query ? `/?${query}` : '/')

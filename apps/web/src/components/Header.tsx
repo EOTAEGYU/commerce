@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { apiFetch } from '@/lib/api/client'
 import { useAuthStore } from '@/store/auth'
@@ -12,6 +13,7 @@ type CategoryResponse = components['schemas']['CategoryResponse']
 export default function Header() {
   const router = useRouter()
   const { user, clearAuth } = useAuthStore()
+  const [keyword, setKeyword] = useState('')
 
   const { data: categories = [] } = useQuery<CategoryResponse[]>({
     queryKey: ['categories'],
@@ -32,11 +34,21 @@ export default function Header() {
     router.push('/')
   }
 
+  function handleSearch(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const trimmed = keyword.trim()
+    if (trimmed) {
+      router.push(`/?keyword=${encodeURIComponent(trimmed)}`)
+    } else {
+      router.push('/')
+    }
+  }
+
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white">
       <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-3">
         {/* 로고 */}
-        <Link href="/" className="text-lg font-bold tracking-tight text-zinc-900">
+        <Link href="/" className="shrink-0 text-lg font-bold tracking-tight text-zinc-900">
           패션 자사몰
         </Link>
 
@@ -68,6 +80,23 @@ export default function Header() {
           ))}
         </nav>
 
+        {/* 검색창 */}
+        <form onSubmit={handleSearch} className="flex items-center">
+          <input
+            type="text"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            placeholder="상품 검색"
+            className="w-44 rounded-l border border-zinc-300 px-3 py-1.5 text-sm outline-none focus:border-zinc-500"
+          />
+          <button
+            type="submit"
+            className="rounded-r border border-l-0 border-zinc-300 bg-zinc-100 px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-200"
+          >
+            검색
+          </button>
+        </form>
+
         {/* 우측 영역 */}
         <div className="ml-auto flex items-center gap-3">
           {/* 주문내역 */}
@@ -77,6 +106,16 @@ export default function Header() {
               className="rounded px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-100"
             >
               주문내역
+            </Link>
+          )}
+
+          {/* 관리자 */}
+          {user?.role === 'ADMIN' && (
+            <Link
+              href="/admin/products"
+              className="rounded px-3 py-1.5 text-sm font-medium text-indigo-600 hover:bg-indigo-50"
+            >
+              관리자
             </Link>
           )}
 
@@ -106,7 +145,12 @@ export default function Header() {
           {/* 인증 버튼 */}
           {user ? (
             <>
-              <span className="text-sm text-zinc-700">{user.name}</span>
+              <Link
+                href="/profile"
+                className="rounded px-2 py-1 text-sm text-zinc-700 hover:bg-zinc-100"
+              >
+                {user.name}
+              </Link>
               <button
                 onClick={handleSignOut}
                 className="rounded px-3 py-1.5 text-sm text-zinc-600 hover:bg-zinc-100"

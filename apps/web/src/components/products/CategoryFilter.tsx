@@ -8,17 +8,18 @@ type CategoryResponse = components['schemas']['CategoryResponse']
 type Props = {
   categories: CategoryResponse[]
   activeCategoryId?: string
+  keyword?: string
 }
 
-export default function CategoryFilter({ categories, activeCategoryId }: Props) {
+export default function CategoryFilter({ categories, activeCategoryId, keyword }: Props) {
   const router = useRouter()
 
   function handleSelect(categoryId?: number) {
-    if (categoryId === undefined) {
-      router.push('/')
-    } else {
-      router.push(`/?categoryId=${categoryId}`)
-    }
+    const params = new URLSearchParams()
+    if (categoryId !== undefined) params.set('categoryId', String(categoryId))
+    if (keyword) params.set('keyword', keyword)
+    const query = params.toString()
+    router.push(query ? `/?${query}` : '/')
   }
 
   return (
