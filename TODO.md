@@ -69,3 +69,36 @@
 - [x] 상품 키워드 검색 API (`GET /api/products?keyword=`)
 - [x] 프로필 수정 API (`PUT /api/users/me`)
 - [x] JWT secret 환경변수 처리 (application.yaml 하드코딩 제거)
+
+---
+
+## 진행 예정 — 무신사 스타일 UI 리디자인
+
+> 레퍼런스: 무신사 — 라이프샷 그리드 피드, 미니멀 헤더, 타이트한 4열 카드
+
+### 6단계: 상품 카드 리디자인 (`ProductCard.tsx`)
+- [x] border·shadow·rounded 제거 → 완전 플랫 카드
+- [x] 이미지 aspect-square 유지, 호버 시 어두워지는 overlay 효과
+- [x] 텍스트: 상품명(sm) + 가격(sm bold) — 패딩 최소화
+- [x] 우하단 하트 아이콘 추가
+
+### 7단계: 상품 그리드 조정 (`ProductGrid.tsx`)
+- [x] 열 수 조정: `grid-cols-2 sm:grid-cols-3 lg:grid-cols-4` (5열 제거)
+- [x] gap 줄임: `gap-4` → `gap-2`
+- [x] 빈 상태 문구/아이콘 개선
+
+### 8단계: 헤더 슬림화 (`Header.tsx`)
+- [x] 높이 줄임 (py-3 → py-2.5)
+- [x] 로고 볼드 + 대문자 스타일 (FASHN)
+- [x] 검색: 텍스트+버튼 형태 → 돋보기 아이콘 클릭 시 검색창 expand
+- [x] 우측: 텍스트 링크 최소화, 아이콘 위주로 정리
+
+### 9단계: 카테고리 필터 리디자인 (`CategoryFilter.tsx`)
+- [x] rounded-full pill → 언더라인 탭 스타일
+- [x] 활성 탭: font-bold + border-b-2 border-zinc-900
+- [x] 비활성 탭: text-zinc-400, hover 시 text-zinc-900
+- [x] 배경 fill 색상 제거
+
+### 10단계: 홈 프로모션 배너 추가 (`page.tsx`)
+- [x] 카테고리 필터 위 얇은 배너 띠 (zinc-950 배경 + 흰 텍스트)
+- [x] 상품 수 카운터 표시 (무신사 스타일 "전체 상품 (14)")

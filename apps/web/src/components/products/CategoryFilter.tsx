@@ -23,13 +23,13 @@ export default function CategoryFilter({ categories, activeCategoryId, keyword }
   }
 
   return (
-    <div className="flex gap-2 overflow-x-auto pb-2 mb-6">
+    <div className="flex overflow-x-auto border-b border-zinc-100 mb-6">
       <button
         onClick={() => handleSelect(undefined)}
-        className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium border transition-colors ${
+        className={`shrink-0 px-4 py-2.5 text-sm transition-colors ${
           !activeCategoryId
-            ? 'bg-zinc-900 text-white border-zinc-900'
-            : 'bg-white text-zinc-700 border-zinc-300 hover:border-zinc-500'
+            ? 'border-b-2 border-zinc-900 font-bold text-zinc-900'
+            : 'text-zinc-400 hover:text-zinc-900'
         }`}
       >
         전체
@@ -38,10 +38,10 @@ export default function CategoryFilter({ categories, activeCategoryId, keyword }
         <button
           key={cat.id}
           onClick={() => handleSelect(cat.id)}
-          className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium border transition-colors ${
+          className={`shrink-0 px-4 py-2.5 text-sm transition-colors ${
             activeCategoryId === String(cat.id)
-              ? 'bg-zinc-900 text-white border-zinc-900'
-              : 'bg-white text-zinc-700 border-zinc-300 hover:border-zinc-500'
+              ? 'border-b-2 border-zinc-900 font-bold text-zinc-900'
+              : 'text-zinc-400 hover:text-zinc-900'
           }`}
         >
           {cat.name}

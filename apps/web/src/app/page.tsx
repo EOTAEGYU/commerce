@@ -35,13 +35,31 @@ export default async function HomePage({ searchParams }: Props) {
     )
   }
 
+  const total = productsPage.totalElements ?? 0
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      {keyword && (
-        <p className="mb-4 text-sm text-zinc-500">
-          <span className="font-medium text-zinc-800">&ldquo;{keyword}&rdquo;</span> 검색 결과
-        </p>
+    <div className="mx-auto max-w-7xl px-4 py-6">
+      {/* 프로모션 배너 */}
+      {!keyword && !categoryId && (
+        <div className="mb-6 flex items-center justify-center bg-zinc-950 py-3 text-sm text-white">
+          <span className="mr-2">🔥</span>
+          <span>신규 회원 첫 구매 10% 할인 &mdash; 지금 바로 쇼핑하세요</span>
+          <span className="ml-2">🔥</span>
+        </div>
       )}
+
+      {/* 타이틀 + 검색 결과 */}
+      <div className="mb-2 flex items-baseline justify-between">
+        <h1 className="text-base font-bold text-zinc-900">
+          {keyword
+            ? `"${keyword}" 검색 결과`
+            : categoryId
+              ? categories.find(c => String(c.id) === categoryId)?.name ?? '상품'
+              : '전체 상품'}
+          <span className="ml-2 text-sm font-normal text-zinc-400">({total.toLocaleString('ko-KR')})</span>
+        </h1>
+      </div>
+
       <CategoryFilter categories={categories} activeCategoryId={categoryId} keyword={keyword} />
       <ProductGrid products={productsPage.content ?? []} />
       <PaginationBar
