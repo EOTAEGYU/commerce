@@ -6,6 +6,7 @@ import com.example.commerce.common.security.JwtProvider
 import com.example.commerce.user.dto.AuthResponse
 import com.example.commerce.user.dto.SignInRequest
 import com.example.commerce.user.dto.SignUpRequest
+import com.example.commerce.user.dto.UpdateProfileRequest
 import com.example.commerce.user.dto.UserResponse
 import com.example.commerce.user.entity.User
 import com.example.commerce.user.repository.UserRepository
@@ -46,6 +47,13 @@ class UserService(
     fun getMe(userId: Long): UserResponse {
         val user = userRepository.findById(userId)
             .orElseThrow { CustomException(ErrorCode.USER_NOT_FOUND) }
+        return UserResponse.from(user)
+    }
+
+    fun updateProfile(userId: Long, request: UpdateProfileRequest): UserResponse {
+        val user = userRepository.findById(userId)
+            .orElseThrow { CustomException(ErrorCode.USER_NOT_FOUND) }
+        user.name = request.name
         return UserResponse.from(user)
     }
 }

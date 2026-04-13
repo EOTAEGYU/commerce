@@ -2,7 +2,7 @@
 Next.js 16 (App Router) 기반 패션 자사몰 프론트엔드
 
 ## 기술 스택
-- Framework: Next.js 16.2.3 (App Router, Turbopack)
+- Framework: Next.js 16.2.3 (App Router, webpack — Turbopack은 Windows에서 불안정)
 - Language: TypeScript 5
 - Styling: Tailwind CSS 4 (CSS-first, tailwind.config.js 없음)
 - 서버 상태: TanStack Query 5 (staleTime 60s, retry 1)
@@ -10,7 +10,7 @@ Next.js 16 (App Router) 기반 패션 자사몰 프론트엔드
 - 타입 생성: openapi-typescript 7
 
 ## 주요 명령어
-- `npm run dev` : 개발 서버 실행 (localhost:3000, Turbopack)
+- `npm run dev` : 개발 서버 실행 (localhost:3000, webpack — `next dev --webpack`)
 - `npm run build` : 프로덕션 빌드
 - `npm run lint` : ESLint 검사
 - `npm run generate:types` : OpenAPI → 타입 생성 (루트에서 실행, 백엔드 기동 필요)

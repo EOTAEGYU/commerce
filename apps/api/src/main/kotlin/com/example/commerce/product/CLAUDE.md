@@ -34,7 +34,7 @@ product/
 | Method | URL | Auth | 설명 |
 |--------|-----|------|------|
 | POST   | /api/products | 필요(ADMIN) | 상품 등록 (옵션 포함) |
-| GET    | /api/products | 불필요 | 상품 목록 조회 (페이징, 카테고리 필터) |
+| GET    | /api/products | 불필요 | 상품 목록 조회 (페이징, categoryId 필터, keyword 검색) |
 | GET    | /api/products/{id} | 불필요 | 상품 단건 조회 (옵션 목록 포함) |
 | PUT    | /api/products/{id} | 필요(ADMIN) | 상품 수정 |
 | DELETE | /api/products/{id} | 필요(ADMIN) | 상품 삭제 |

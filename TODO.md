@@ -58,14 +58,14 @@
 - [x] 주문 취소 (`POST /api/orders/{id}/cancel`)
 
 ### 5단계: 관리자 페이지
-- [ ] ADMIN 전용 레이아웃 — 역할 체크 미들웨어
-- [ ] 상품 관리 (`/admin/products`) — 목록, 등록, 수정, 삭제
-- [ ] 카테고리 관리 (`/admin/categories`) — 트리 뷰, 추가, 삭제
+- [x] ADMIN 전용 레이아웃 — 역할 체크 미들웨어
+- [x] 상품 관리 (`/admin/products`) — 목록, 등록, 수정, 삭제
+- [x] 카테고리 관리 (`/admin/categories`) — 트리 뷰, 추가, 삭제
 
 ---
 
-## 진행 예정 — 백엔드 보완 (프론트 개발 중 발견 시)
+## 완료 — 백엔드 보완
 
-- [ ] 상품 키워드 검색 API (`GET /api/products?keyword=`)
-- [ ] 프로필 수정 API (`PUT /api/users/me`)
-- [ ] JWT secret 환경변수 처리 (application.yaml 하드코딩 제거)
+- [x] 상품 키워드 검색 API (`GET /api/products?keyword=`)
+- [x] 프로필 수정 API (`PUT /api/users/me`)
+- [x] JWT secret 환경변수 처리 (application.yaml 하드코딩 제거)

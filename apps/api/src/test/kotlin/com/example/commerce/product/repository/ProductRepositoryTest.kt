@@ -32,23 +32,53 @@ class ProductRepositoryTest {
         productRepository.save(Product(name = name, price = 10000L, categoryId = categoryId))
 
     @Nested
-    inner class FindByCategoryId {
+    inner class Search {
 
         @Test
-        fun `해당 카테고리의 상품만 반환`() {
+        fun `categoryId 없이 조회 시 전체 반환`() {
+            saveProduct("상의 상품")
+            saveProduct("하의 상품")
+
+            val result = productRepository.search(null, "%", PageRequest.of(0, 20))
+
+            assertEquals(2, result.totalElements)
+        }
+
+        @Test
+        fun `categoryId로 필터링 시 해당 카테고리 상품만 반환`() {
             val other = categoryRepository.save(Category(name = "하의"))
             saveProduct("상의 상품", category.id)
             saveProduct("하의 상품", other.id)
 
-            val result = productRepository.findByCategoryId(category.id, PageRequest.of(0, 20))
+            val result = productRepository.search(category.id, "%", PageRequest.of(0, 20))
 
             assertEquals(1, result.totalElements)
             assertEquals("상의 상품", result.content[0].name)
         }
 
         @Test
+        fun `keyword로 이름 검색 시 일치 상품만 반환`() {
+            saveProduct("나이키 티셔츠")
+            saveProduct("아디다스 바지")
+
+            val result = productRepository.search(null, "%나이키%", PageRequest.of(0, 20))
+
+            assertEquals(1, result.totalElements)
+            assertEquals("나이키 티셔츠", result.content[0].name)
+        }
+
+        @Test
+        fun `keyword 대소문자 구분 없이 검색`() {
+            saveProduct("Nike 티셔츠")
+
+            val result = productRepository.search(null, "%nike%", PageRequest.of(0, 20))
+
+            assertEquals(1, result.totalElements)
+        }
+
+        @Test
         fun `해당 카테고리 상품 없으면 빈 페이지 반환`() {
-            val result = productRepository.findByCategoryId(category.id, PageRequest.of(0, 20))
+            val result = productRepository.search(category.id, "%", PageRequest.of(0, 20))
 
             assertEquals(0, result.totalElements)
         }

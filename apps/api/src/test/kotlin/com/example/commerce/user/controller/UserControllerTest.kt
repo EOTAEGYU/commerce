@@ -6,6 +6,7 @@ import com.example.commerce.common.security.JwtProvider
 import com.example.commerce.user.dto.AuthResponse
 import com.example.commerce.user.dto.SignInRequest
 import com.example.commerce.user.dto.SignUpRequest
+import com.example.commerce.user.dto.UpdateProfileRequest
 import com.example.commerce.user.dto.UserResponse
 import com.example.commerce.user.service.UserService
 import com.example.commerce.common.security.SecurityConfig
@@ -25,6 +26,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.put
 import tools.jackson.databind.ObjectMapper
 
 @WebMvcTest(UserController::class)
@@ -164,6 +166,56 @@ class UserControllerTest {
         fun `미인증 요청 시 401 반환`() {
             mockMvc.get("/api/users/me").andExpect {
                 status { isUnauthorized() }
+            }
+        }
+    }
+
+    @Nested
+    inner class UpdateProfile {
+
+        @Test
+        fun `인증된 사용자 PUT 요청 시 200 및 수정된 프로필 반환`() {
+            val request = UpdateProfileRequest(name = "김철수")
+            val updatedResponse = UserResponse(id = 1L, email = "test@test.com", name = "김철수", role = "USER")
+            given(userService.updateProfile(any(), any())).willReturn(updatedResponse)
+
+            mockMvc.put("/api/users/me") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(request)
+                with(auth())
+                with(csrf())
+            }.andExpect {
+                status { isOk() }
+                jsonPath("$.success") { value(true) }
+                jsonPath("$.data.name") { value("김철수") }
+            }
+        }
+
+        @Test
+        fun `미인증 요청 시 401 반환`() {
+            val request = UpdateProfileRequest(name = "김철수")
+
+            mockMvc.put("/api/users/me") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(request)
+                with(csrf())
+            }.andExpect {
+                status { isUnauthorized() }
+            }
+        }
+
+        @Test
+        fun `name 빈값 입력 시 400 반환`() {
+            val request = UpdateProfileRequest(name = "")
+
+            mockMvc.put("/api/users/me") {
+                contentType = MediaType.APPLICATION_JSON
+                content = objectMapper.writeValueAsString(request)
+                with(auth())
+                with(csrf())
+            }.andExpect {
+                status { isBadRequest() }
+                jsonPath("$.success") { value(false) }
             }
         }
     }

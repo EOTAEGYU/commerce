@@ -27,9 +27,10 @@ class ProductController(
     @GetMapping
     fun getList(
         @RequestParam(required = false) categoryId: Long?,
+        @RequestParam(required = false) keyword: String?,
         @PageableDefault(size = 20) pageable: Pageable,
     ): ResponseEntity<ApiResponse<Page<ProductResponse>>> =
-        ResponseEntity.ok(ApiResponse.success(productService.getList(categoryId, pageable)))
+        ResponseEntity.ok(ApiResponse.success(productService.getList(categoryId, keyword, pageable)))
 
     @GetMapping("/{id}")
     fun getOne(@PathVariable id: Long): ResponseEntity<ApiResponse<ProductResponse>> =

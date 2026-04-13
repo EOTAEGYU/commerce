@@ -123,6 +123,7 @@ src/main/kotlin/com/example/commerce/
 | `docs/database/` | 엔티티 필드 정의, 관계도 |
 | `docs/domain/` | 도메인별 비즈니스 규칙 및 유스케이스 |
 | `docs/development/` | 로컬 세팅, 코드 컨벤션, 에러 코드 목록 |
+| `docs/troubleshooting/` | 개발 중 발생한 문제 상황 및 해결 과정 기록 |
 
 ## 도메인별 CLAUDE.md
 각 도메인 폴더에 별도 CLAUDE.md를 두어 도메인 특화 규칙을 관리한다.

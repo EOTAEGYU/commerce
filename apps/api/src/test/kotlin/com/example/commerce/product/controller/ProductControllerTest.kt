@@ -119,7 +119,7 @@ class ProductControllerTest {
         @Test
         fun `미인증으로 상품 목록 조회 시 200 반환`() {
             val page = PageImpl(listOf(productResponse))
-            given(productService.getList(anyOrNull(), any())).willReturn(page)
+            given(productService.getList(anyOrNull(), anyOrNull(), any())).willReturn(page)
 
             mockMvc.get("/api/products").andExpect {
                 status { isOk() }

@@ -4,6 +4,7 @@ import com.example.commerce.common.ApiResponse
 import com.example.commerce.user.dto.AuthResponse
 import com.example.commerce.user.dto.SignInRequest
 import com.example.commerce.user.dto.SignUpRequest
+import com.example.commerce.user.dto.UpdateProfileRequest
 import com.example.commerce.user.dto.UserResponse
 import com.example.commerce.user.service.UserService
 import jakarta.validation.Valid
@@ -28,4 +29,11 @@ class UserController(
     @GetMapping("/me")
     fun getMe(@AuthenticationPrincipal userId: Long): ResponseEntity<ApiResponse<UserResponse>> =
         ResponseEntity.ok(ApiResponse.success(userService.getMe(userId)))
+
+    @PutMapping("/me")
+    fun updateProfile(
+        @AuthenticationPrincipal userId: Long,
+        @Valid @RequestBody request: UpdateProfileRequest,
+    ): ResponseEntity<ApiResponse<UserResponse>> =
+        ResponseEntity.ok(ApiResponse.success(userService.updateProfile(userId, request)))
 }

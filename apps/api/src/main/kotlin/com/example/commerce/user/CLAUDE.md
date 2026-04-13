@@ -9,7 +9,7 @@ user/
 ├── service/      # UserService
 ├── repository/   # UserRepository
 ├── entity/       # User, UserRole
-└── dto/          # SignUpRequest, SignInRequest, AuthResponse, UserResponse
+└── dto/          # SignUpRequest, SignInRequest, AuthResponse, UserResponse, UpdateProfileRequest
 ```
 
 ## Entity
@@ -28,6 +28,7 @@ user/
 | POST | /api/users/signup | 불필요 | 회원가입 |
 | POST | /api/users/signin | 불필요 | 로그인 → JWT 반환 |
 | GET  | /api/users/me | 필요 | 내 프로필 조회 |
+| PUT  | /api/users/me | 필요 | 내 프로필 수정 (name 변경) |
 
 ## JWT
 - Access Token 클레임: `userId`, `email`, `role`

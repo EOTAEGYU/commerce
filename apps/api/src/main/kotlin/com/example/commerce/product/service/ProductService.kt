@@ -40,11 +40,10 @@ class ProductService(
     }
 
     @Transactional(readOnly = true)
-    fun getList(categoryId: Long?, pageable: Pageable): Page<ProductResponse> =
-        if (categoryId != null)
-            productRepository.findByCategoryId(categoryId, pageable).map { ProductResponse.from(it) }
-        else
-            productRepository.findAll(pageable).map { ProductResponse.from(it) }
+    fun getList(categoryId: Long?, keyword: String?, pageable: Pageable): Page<ProductResponse> {
+        val pattern = keyword?.takeIf { it.isNotBlank() }?.let { "%${it.lowercase()}%" } ?: "%"
+        return productRepository.search(categoryId, pattern, pageable).map { ProductResponse.from(it) }
+    }
 
     @Transactional(readOnly = true)
     fun getOne(id: Long): ProductResponse {

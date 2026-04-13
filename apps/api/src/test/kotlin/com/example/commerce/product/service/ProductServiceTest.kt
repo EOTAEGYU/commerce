@@ -88,13 +88,13 @@ class ProductServiceTest {
     inner class GetList {
 
         @Test
-        fun `categoryId 없이 조회 시 전체 상품 페이지 반환`() {
+        fun `파라미터 없이 조회 시 전체 상품 페이지 반환`() {
             val pageable = PageRequest.of(0, 20)
             val page = PageImpl(listOf(createProduct()))
 
-            every { productRepository.findAll(pageable) } returns page
+            every { productRepository.search(null, "%", pageable) } returns page
 
-            val result = productService.getList(null, pageable)
+            val result = productService.getList(null, null, pageable)
 
             assertEquals(1, result.totalElements)
         }
@@ -104,9 +104,45 @@ class ProductServiceTest {
             val pageable = PageRequest.of(0, 20)
             val page = PageImpl(listOf(createProduct()))
 
-            every { productRepository.findByCategoryId(1L, pageable) } returns page
+            every { productRepository.search(1L, "%", pageable) } returns page
 
-            val result = productService.getList(1L, pageable)
+            val result = productService.getList(1L, null, pageable)
+
+            assertEquals(1, result.totalElements)
+        }
+
+        @Test
+        fun `keyword로 검색 시 이름 일치 상품만 반환`() {
+            val pageable = PageRequest.of(0, 20)
+            val page = PageImpl(listOf(createProduct()))
+
+            every { productRepository.search(null, "%나이키%", pageable) } returns page
+
+            val result = productService.getList(null, "나이키", pageable)
+
+            assertEquals(1, result.totalElements)
+        }
+
+        @Test
+        fun `categoryId와 keyword 조합 검색 시 결과 반환`() {
+            val pageable = PageRequest.of(0, 20)
+            val page = PageImpl(listOf(createProduct()))
+
+            every { productRepository.search(1L, "%나이키%", pageable) } returns page
+
+            val result = productService.getList(1L, "나이키", pageable)
+
+            assertEquals(1, result.totalElements)
+        }
+
+        @Test
+        fun `공백 keyword 입력 시 전체 조회와 동일하게 처리`() {
+            val pageable = PageRequest.of(0, 20)
+            val page = PageImpl(listOf(createProduct()))
+
+            every { productRepository.search(null, "%", pageable) } returns page
+
+            val result = productService.getList(null, "   ", pageable)
 
             assertEquals(1, result.totalElements)
         }

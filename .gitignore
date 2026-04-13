@@ -42,3 +42,6 @@ out/
 ### Frontend ###
 node_modules/
 apps/web/src/types/api.generated.ts
+
+### Environment ###
+.env

@@ -5,6 +5,7 @@ import com.example.commerce.common.ErrorCode
 import com.example.commerce.common.security.JwtProvider
 import com.example.commerce.user.dto.SignInRequest
 import com.example.commerce.user.dto.SignUpRequest
+import com.example.commerce.user.dto.UpdateProfileRequest
 import com.example.commerce.user.entity.User
 import com.example.commerce.user.entity.UserRole
 import com.example.commerce.user.repository.UserRepository
@@ -134,6 +135,32 @@ class UserServiceTest {
             every { userRepository.findById(999L) } returns Optional.empty()
 
             val exception = assertThrows<CustomException> { userService.getMe(999L) }
+            assertEquals(ErrorCode.USER_NOT_FOUND, exception.errorCode)
+        }
+    }
+
+    @Nested
+    inner class UpdateProfile {
+
+        @Test
+        fun `정상 수정 시 변경된 name 반환`() {
+            val user = createUser(id = 1L)
+            val request = UpdateProfileRequest(name = "김철수")
+
+            every { userRepository.findById(1L) } returns Optional.of(user)
+
+            val result = userService.updateProfile(1L, request)
+
+            assertEquals("김철수", result.name)
+        }
+
+        @Test
+        fun `존재하지 않는 userId 수정 시 USER_NOT_FOUND 예외 발생`() {
+            val request = UpdateProfileRequest(name = "김철수")
+
+            every { userRepository.findById(999L) } returns Optional.empty()
+
+            val exception = assertThrows<CustomException> { userService.updateProfile(999L, request) }
             assertEquals(ErrorCode.USER_NOT_FOUND, exception.errorCode)
         }
     }
