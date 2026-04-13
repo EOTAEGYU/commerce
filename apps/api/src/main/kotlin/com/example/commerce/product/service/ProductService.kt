@@ -63,6 +63,25 @@ class ProductService(
         product.price = request.price
         product.categoryId = request.categoryId
         product.imageUrl = request.imageUrl
+
+        request.options?.let { newOptions ->
+            val existingByKey = product.options.associateBy { "${it.size}|${it.color}" }
+            val newKeys = newOptions.map { "${it.size}|${it.color}" }.toSet()
+
+            // 요청에 없는 옵션 제거 (orphanRemoval이 DB 삭제 처리)
+            product.options.removeIf { "${it.size}|${it.color}" !in newKeys }
+
+            newOptions.forEach { req ->
+                val key = "${req.size}|${req.color}"
+                val existing = existingByKey[key]
+                if (existing != null) {
+                    existing.stock = req.stock
+                } else {
+                    product.options.add(ProductOption(product = product, size = req.size, color = req.color, stock = req.stock))
+                }
+            }
+        }
+
         return ProductResponse.from(product)
     }
 

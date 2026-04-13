@@ -18,6 +18,15 @@ type Props = {
   item: CartItemWithProduct
 }
 
+function isValidUrl(url: string): boolean {
+  try {
+    new URL(url)
+    return true
+  } catch {
+    return false
+  }
+}
+
 export default function CartItemRow({ item }: Props) {
   const queryClient = useQueryClient()
 
@@ -64,7 +73,7 @@ export default function CartItemRow({ item }: Props) {
     <div className="flex gap-4 py-5">
       {/* 이미지 */}
       <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-zinc-100">
-        {item.imageUrl ? (
+        {item.imageUrl && isValidUrl(item.imageUrl) ? (
           <Image
             src={item.imageUrl}
             alt={item.productName}

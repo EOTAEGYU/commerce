@@ -306,6 +306,7 @@ export default function AdminProductsPage() {
 
   function handleUpdate(form: ProductFormData) {
     if (!editTarget) return
+    if (!form.options.length) { setError('옵션을 1개 이상 추가해주세요.'); return }
     updateMutation.mutate({
       id: editTarget.id!,
       body: {
@@ -314,6 +315,7 @@ export default function AdminProductsPage() {
         price: Number(form.price),
         categoryId: Number(form.categoryId),
         imageUrl: form.imageUrl || undefined,
+        options: form.options,
       },
     })
   }
