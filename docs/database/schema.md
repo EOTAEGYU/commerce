@@ -156,6 +156,26 @@
 
 ---
 
+---
+
+## reviews
+
+상품 리뷰 테이블. OrderItem 단위로 1개 리뷰 작성 가능.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `id` | BIGINT | PK, AUTO INCREMENT | 리뷰 ID |
+| `user_id` | BIGINT | NOT NULL | 작성자 회원 ID |
+| `product_id` | BIGINT | NOT NULL | 상품 ID (통계 조회용) |
+| `order_id` | BIGINT | NOT NULL | 주문 ID |
+| `order_item_id` | BIGINT | NOT NULL, UNIQUE | 주문 항목 ID (중복 방지) |
+| `rating` | DOUBLE | NOT NULL | 별점 (0.5 ~ 5.0, 0.5단위) |
+| `content` | TEXT | NOT NULL | 리뷰 본문 (최대 500자) |
+| `created_at` | TIMESTAMP | NOT NULL | |
+| `updated_at` | TIMESTAMP | NOT NULL | |
+
+---
+
 ## 엔티티 관계도
 
 ```
@@ -163,15 +183,21 @@ categories
   │
   └──< products (category_id)              N:1 — 상품은 하나의 소분류에 속함
           │
-          └──< product_options             1:N — 상품은 여러 옵션(사이즈/컬러)을 가짐
+          ├──< product_options             1:N — 상품은 여러 옵션(사이즈/컬러)을 가짐
+          │
+          └──< reviews (product_id)        1:N — 상품별 리뷰 목록 조회용
 
 users
   │
   ├──< orders (user_id)                   1:N — 한 회원이 여러 주문
   │       │
   │       ├──< order_items                1:N — 한 주문에 여러 상품 (스냅샷)
+  │       │       │
+  │       │       └── reviews (order_item_id, UNIQUE)  1:1 — 항목당 리뷰 1개
   │       │
   │       └── payments (order_id)         1:1 — 주문당 결제 1건
+  │
+  ├──< reviews (user_id)                  1:N — 회원이 작성한 리뷰 목록
   │
   └── carts (user_id, UNIQUE)             1:1 — 회원당 장바구니 1개
           │

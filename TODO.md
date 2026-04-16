@@ -3,37 +3,38 @@
 ## 구현 체크리스트
 
 ### Step 1. Review 도메인 생성
-- [ ] `review/entity/Review.kt` — BaseEntity 상속, unique FK on order_item_id
-- [ ] `review/repository/ReviewRepository.kt` — 배치 통계 쿼리 포함
-- [ ] `review/dto/ReviewRequest.kt` — ReviewCreateRequest, ReviewUpdateRequest
-- [ ] `review/dto/ReviewResponse.kt` — companion object from() 팩토리 메서드
-- [ ] `review/service/ReviewService.kt` — 검증 흐름 (OrderItem 조회 → 소유자 → DELIVERED → 중복 → 별점 단위)
-- [ ] `review/controller/ReviewController.kt` — 5개 엔드포인트
+- [x] `review/entity/Review.kt` — BaseEntity 상속, unique FK on order_item_id
+- [x] `review/repository/ReviewRepository.kt` — 배치 통계 쿼리 포함
+- [x] `review/dto/ReviewRequest.kt` — ReviewCreateRequest, ReviewUpdateRequest
+- [x] `review/dto/ReviewResponse.kt` — companion object from() 팩토리 메서드
+- [x] `review/service/ReviewService.kt` — 검증 흐름 (OrderItem 조회 → 소유자 → DELIVERED → 중복 → 별점 단위)
+- [x] `review/controller/ReviewController.kt` — 5개 엔드포인트
 
 ### Step 2. ErrorCode 추가
-- [ ] `common/ErrorCode.kt` — REVIEW_NOT_FOUND, REVIEW_ALREADY_EXISTS, REVIEW_NOT_OWNED, ORDER_NOT_DELIVERED, INVALID_RATING
-- [ ] `common/ErrorCode.kt` — ORDER_ITEM_NOT_FOUND (없으면 추가)
+- [x] `common/ErrorCode.kt` — REVIEW_NOT_FOUND, REVIEW_ALREADY_EXISTS, REVIEW_NOT_OWNED, ORDER_NOT_DELIVERED, INVALID_RATING
+- [x] `common/ErrorCode.kt` — ORDER_ITEM_NOT_FOUND 추가
 
 ### Step 3. ProductResponse 통계 필드 추가
-- [ ] `product/dto/ProductResponse.kt` — averageRating: Double?, reviewCount: Long 추가
-- [ ] `product/service/ProductService.kt` — ReviewRepository 주입, 단건/목록 통계 병합
+- [x] `product/dto/ProductResponse.kt` — averageRating: Double?, reviewCount: Long 추가
+- [x] `product/service/ProductService.kt` — ReviewRepository 주입, 단건/목록 통계 병합
 
 ### Step 4. SecurityConfig 경로 허용
-- [ ] `common/security/SecurityConfig.kt` — GET /api/products/*/reviews permitAll 추가
+- [x] `common/security/SecurityConfig.kt` — GET /api/products/** 이미 허용됨 (수정 불필요)
 
 ### Step 5. 테스트 작성
-- [ ] `review/service/ReviewServiceTest.kt` — MockK, 검증 실패 케이스 + 정상 케이스
-- [ ] `review/controller/ReviewControllerTest.kt` — @WebMvcTest, 상태코드 검증
+- [x] `review/service/ReviewServiceTest.kt` — MockK, 검증 실패 케이스 + 정상 케이스 (18케이스)
+- [x] `review/controller/ReviewControllerTest.kt` — @WebMvcTest, 상태코드 검증 (17케이스)
 
 ### Step 6. 빌드 및 검증
-- [ ] `./gradlew build` 빌드 성공 확인
-- [ ] `./gradlew test` 전체 테스트 통과 확인
+- [x] `./gradlew build` 빌드 성공 확인
+- [x] `./gradlew test` 전체 테스트 통과 확인 (228 tests)
 
 ### Step 7. 커밋 및 문서 최신화
-- [ ] `feat(review): 리뷰 도메인 구현` 커밋
-- [ ] `docs/domain/review.md` 신규 작성
-- [ ] `docs/api/endpoints.md` 리뷰 엔드포인트 추가
-- [ ] `docs/database/entities.md` Review 엔티티 추가
+- [x] `feat(review): 리뷰 도메인 구현` 커밋
+- [x] `docs/domain/review.md` 신규 작성
+- [x] `docs/api/endpoints.md` 리뷰 엔드포인트 추가
+- [x] `docs/database/schema.md` reviews 테이블 + 관계도 업데이트
+- [x] `docs/development/error-codes.md` 리뷰 에러코드 추가
 
 ---
 

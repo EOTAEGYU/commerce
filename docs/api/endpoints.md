@@ -93,3 +93,58 @@
 |--------|-----|------|------|
 | POST | `/api/payments` | **필요** | 결제 요청 |
 | GET | `/api/payments/{orderId}` | **필요** | 결제 상태 조회 |
+
+---
+
+## 리뷰 (Review) — 구현 완료
+
+| Method | URL | 인증 | 설명 |
+|--------|-----|------|------|
+| POST | `/api/reviews` | **필요** | 리뷰 작성 (DELIVERED 주문의 OrderItem 단위) |
+| PUT | `/api/reviews/{id}` | **필요** (본인) | 리뷰 수정 |
+| DELETE | `/api/reviews/{id}` | **필요** (본인) | 리뷰 삭제 |
+| GET | `/api/products/{productId}/reviews` | 불필요 | 상품별 리뷰 목록 (페이징) |
+| GET | `/api/reviews/my` | **필요** | 내 리뷰 목록 |
+
+### POST /api/reviews
+```json
+// Request
+{
+  "orderItemId": 1,
+  "rating": 4.5,
+  "content": "사이즈가 딱 맞고 품질이 좋습니다."
+}
+
+// Response 200
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "userId": 1,
+    "userName": "홍길동",
+    "productId": 2,
+    "orderItemId": 1,
+    "rating": 4.5,
+    "content": "사이즈가 딱 맞고 품질이 좋습니다.",
+    "createdAt": "2026-04-16T10:00:00",
+    "updatedAt": "2026-04-16T10:00:00"
+  },
+  "error": null
+}
+```
+
+### GET /api/products/{productId}/reviews
+```json
+// Response 200 (Page<ReviewResponse>)
+{
+  "success": true,
+  "data": {
+    "content": [...],
+    "totalElements": 5,
+    "totalPages": 1,
+    "size": 20,
+    "number": 0
+  },
+  "error": null
+}
+```

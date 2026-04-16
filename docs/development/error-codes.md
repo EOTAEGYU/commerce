@@ -58,6 +58,22 @@
 | `ORDER_NOT_PAYABLE` | 409 | 결제할 수 없는 주문 상태입니다. | PENDING이 아닌 주문에 결제 요청 |
 | `ORDER_ALREADY_PAID` | 409 | 이미 결제된 주문입니다. | 중복 결제 시도 |
 
+## 주문 항목 (OrderItem)
+
+| 코드 | HTTP 상태 | 메시지 | 발생 상황 |
+|------|----------|--------|----------|
+| `ORDER_ITEM_NOT_FOUND` | 404 | 존재하지 않는 주문 항목입니다. | orderItemId로 항목 조회 실패 |
+
+## 리뷰 (Review)
+
+| 코드 | HTTP 상태 | 메시지 | 발생 상황 |
+|------|----------|--------|----------|
+| `REVIEW_NOT_FOUND` | 404 | 존재하지 않는 리뷰입니다. | reviewId로 리뷰 조회 실패 |
+| `REVIEW_ALREADY_EXISTS` | 409 | 이미 리뷰를 작성했습니다. | 동일 OrderItem에 중복 리뷰 작성 시도 |
+| `REVIEW_NOT_OWNED` | 403 | 본인의 리뷰가 아닙니다. | 다른 회원의 리뷰 수정/삭제 시도 |
+| `ORDER_NOT_DELIVERED` | 400 | 배송 완료된 주문에만 리뷰를 작성할 수 있습니다. | DELIVERED 상태가 아닌 주문의 OrderItem에 리뷰 작성 |
+| `INVALID_RATING` | 400 | 별점은 0.5 단위로 0.5 ~ 5.0 사이여야 합니다. | 1.3, 2.7 등 0.5 단위가 아닌 별점 입력 |
+
 ## 사용 방법
 
 ```kotlin
