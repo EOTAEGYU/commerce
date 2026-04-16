@@ -176,6 +176,24 @@
 
 ---
 
+## product_likes
+
+상품 좋아요(찜) 테이블. 회원-상품 쌍에 유니크 제약.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `id` | BIGINT | PK, AUTO INCREMENT | 좋아요 ID |
+| `user_id` | BIGINT | NOT NULL, INDEX | 회원 ID |
+| `product_id` | BIGINT | NOT NULL, INDEX | 상품 ID |
+| `created_at` | TIMESTAMP | NOT NULL | |
+| `updated_at` | TIMESTAMP | NOT NULL | |
+
+- `(user_id, product_id)` UNIQUE 제약 — 동일 상품 중복 좋아요 방지
+- `idx_product_likes_user_id` — 내 좋아요 목록 조회 최적화
+- `idx_product_likes_product_id` — 상품별 좋아요 수 집계 최적화
+
+---
+
 ## 엔티티 관계도
 
 ```
@@ -185,7 +203,9 @@ categories
           │
           ├──< product_options             1:N — 상품은 여러 옵션(사이즈/컬러)을 가짐
           │
-          └──< reviews (product_id)        1:N — 상품별 리뷰 목록 조회용
+          ├──< reviews (product_id)        1:N — 상품별 리뷰 목록 조회용
+          │
+          └──< product_likes (product_id)  1:N — 상품별 좋아요
 
 users
   │
@@ -198,6 +218,8 @@ users
   │       └── payments (order_id)         1:1 — 주문당 결제 1건
   │
   ├──< reviews (user_id)                  1:N — 회원이 작성한 리뷰 목록
+  │
+  ├──< product_likes (user_id)            1:N — 회원이 찜한 상품 목록
   │
   └── carts (user_id, UNIQUE)             1:1 — 회원당 장바구니 1개
           │

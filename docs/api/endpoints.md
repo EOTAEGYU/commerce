@@ -134,6 +134,7 @@
 ```
 
 ### GET /api/products/{productId}/reviews
+
 ```json
 // Response 200 (Page<ReviewResponse>)
 {
@@ -144,6 +145,60 @@
     "totalPages": 1,
     "size": 20,
     "number": 0
+  },
+  "error": null
+}
+```
+
+---
+
+## 좋아요 (Like) — 구현 완료
+
+| Method | URL | 인증 | 설명 |
+|--------|-----|------|------|
+| POST | `/api/likes/{productId}` | **필요** | 좋아요 토글 (추가/취소) |
+| GET | `/api/likes/my` | **필요** | 내 좋아요 상품 목록 (페이징) |
+| GET | `/api/likes/status?productIds=1,2,3` | **필요** | 복수 상품 좋아요 여부 조회 |
+
+### POST /api/likes/{productId}
+```json
+// Response 200
+{
+  "success": true,
+  "data": {
+    "productId": 1,
+    "liked": true,
+    "likeCount": 42
+  },
+  "error": null
+}
+```
+
+### GET /api/likes/my
+```json
+// Response 200 (Page<ProductResponse>)
+{
+  "success": true,
+  "data": {
+    "content": [...],
+    "totalElements": 5,
+    "totalPages": 1,
+    "size": 20,
+    "number": 0
+  },
+  "error": null
+}
+```
+
+### GET /api/likes/status?productIds=1,2,3
+```json
+// Response 200 (Map<Long, Boolean>)
+{
+  "success": true,
+  "data": {
+    "1": true,
+    "2": false,
+    "3": true
   },
   "error": null
 }
