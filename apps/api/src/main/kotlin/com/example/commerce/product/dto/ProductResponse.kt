@@ -11,9 +11,15 @@ data class ProductResponse(
     val categoryId: Long,
     val imageUrl: String?,
     val options: List<ProductOptionResponse>,
+    val averageRating: Double? = null,
+    val reviewCount: Long = 0L,
 ) {
     companion object {
-        fun from(product: Product): ProductResponse = ProductResponse(
+        fun from(
+            product: Product,
+            averageRating: Double? = null,
+            reviewCount: Long = 0L,
+        ): ProductResponse = ProductResponse(
             id = product.id,
             name = product.name,
             description = product.description,
@@ -21,6 +27,8 @@ data class ProductResponse(
             categoryId = product.categoryId,
             imageUrl = product.imageUrl,
             options = product.options.map { ProductOptionResponse.from(it) },
+            averageRating = averageRating,
+            reviewCount = reviewCount,
         )
     }
 }

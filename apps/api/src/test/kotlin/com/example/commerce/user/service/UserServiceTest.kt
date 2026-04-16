@@ -70,6 +70,18 @@ class UserServiceTest {
             assertEquals(ErrorCode.DUPLICATE_EMAIL, exception.errorCode)
             verify(exactly = 0) { userRepository.save(any()) }
         }
+
+        @Test
+        fun `passwordEncoder가 null 반환 시 INTERNAL_SERVER_ERROR 예외 발생`() {
+            val request = SignUpRequest(email = "test@test.com", password = "password1!", name = "홍길동")
+
+            every { userRepository.existsByEmail(request.email) } returns false
+            every { passwordEncoder.encode(request.password) } returns null
+
+            val exception = assertThrows<CustomException> { userService.signUp(request) }
+            assertEquals(ErrorCode.INTERNAL_SERVER_ERROR, exception.errorCode)
+            verify(exactly = 0) { userRepository.save(any()) }
+        }
     }
 
     @Nested

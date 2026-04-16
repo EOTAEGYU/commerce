@@ -177,6 +177,20 @@ class CartServiceTest {
             val ex = assertThrows<CustomException> { cartService.addItem(1L, request) }
             assertEquals(ErrorCode.PRODUCT_NOT_FOUND, ex.errorCode)
         }
+
+        @Test
+        fun `상품은 존재하고 옵션이 없을 시 PRODUCT_OPTION_NOT_FOUND 예외 발생`() {
+            // given
+            val product = createProduct()
+            val request = CartItemAddRequest(productId = 1L, productOptionId = 999L, quantity = 1)
+
+            every { productRepository.findById(1L) } returns Optional.of(product)
+            every { productOptionRepository.findById(999L) } returns Optional.empty()
+
+            // when / then
+            val ex = assertThrows<CustomException> { cartService.addItem(1L, request) }
+            assertEquals(ErrorCode.PRODUCT_OPTION_NOT_FOUND, ex.errorCode)
+        }
     }
 
     @Nested
@@ -236,6 +250,34 @@ class CartServiceTest {
             val ex = assertThrows<CustomException> { cartService.updateItem(1L, 1L, CartItemUpdateRequest(quantity = 1)) }
             assertEquals(ErrorCode.CART_ITEM_NOT_FOUND, ex.errorCode)
         }
+
+        @Test
+        fun `cartItemRepository findById가 empty 반환 시 CART_ITEM_NOT_FOUND 예외 발생`() {
+            // given
+            val cart = createCart()
+
+            every { cartRepository.findByUserId(1L) } returns cart
+            every { cartItemRepository.findById(999L) } returns Optional.empty()
+
+            // when / then
+            val ex = assertThrows<CustomException> { cartService.updateItem(1L, 999L, CartItemUpdateRequest(quantity = 1)) }
+            assertEquals(ErrorCode.CART_ITEM_NOT_FOUND, ex.errorCode)
+        }
+
+        @Test
+        fun `소유권 확인 통과 후 productOptionRepository findById가 empty 반환 시 PRODUCT_OPTION_NOT_FOUND 예외 발생`() {
+            // given
+            val cart = createCart(userId = 1L, id = 1L)
+            val item = createCartItem(cart, optionId = 999L)
+
+            every { cartRepository.findByUserId(1L) } returns cart
+            every { cartItemRepository.findById(1L) } returns Optional.of(item)
+            every { productOptionRepository.findById(999L) } returns Optional.empty()
+
+            // when / then
+            val ex = assertThrows<CustomException> { cartService.updateItem(1L, 1L, CartItemUpdateRequest(quantity = 1)) }
+            assertEquals(ErrorCode.PRODUCT_OPTION_NOT_FOUND, ex.errorCode)
+        }
     }
 
     @Nested
@@ -276,6 +318,16 @@ class CartServiceTest {
             every { cartItemRepository.findById(999L) } returns Optional.empty()
 
             val ex = assertThrows<CustomException> { cartService.deleteItem(1L, 999L) }
+            assertEquals(ErrorCode.CART_ITEM_NOT_FOUND, ex.errorCode)
+        }
+
+        @Test
+        fun `cartRepository findByUserId가 null 반환 시 CART_ITEM_NOT_FOUND 예외 발생`() {
+            // given
+            every { cartRepository.findByUserId(1L) } returns null
+
+            // when / then
+            val ex = assertThrows<CustomException> { cartService.deleteItem(1L, 1L) }
             assertEquals(ErrorCode.CART_ITEM_NOT_FOUND, ex.errorCode)
         }
     }

@@ -39,4 +39,14 @@ enum class ErrorCode(
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 결제 내역입니다."),
     ORDER_NOT_PAYABLE(HttpStatus.CONFLICT, "결제할 수 없는 주문 상태입니다."),
     ORDER_ALREADY_PAID(HttpStatus.CONFLICT, "이미 결제된 주문입니다."),
+
+    // Order Item
+    ORDER_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주문 항목입니다."),
+
+    // Review
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 리뷰입니다."),
+    REVIEW_ALREADY_EXISTS(HttpStatus.CONFLICT, "이미 리뷰를 작성했습니다."),
+    REVIEW_NOT_OWNED(HttpStatus.FORBIDDEN, "본인의 리뷰가 아닙니다."),
+    ORDER_NOT_DELIVERED(HttpStatus.BAD_REQUEST, "배송 완료된 주문에만 리뷰를 작성할 수 있습니다."),
+    INVALID_RATING(HttpStatus.BAD_REQUEST, "별점은 0.5 단위로 0.5 ~ 5.0 사이여야 합니다."),
 }

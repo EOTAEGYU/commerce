@@ -161,6 +161,26 @@ class PaymentServiceTest {
             }
             assertEquals(ErrorCode.ORDER_ALREADY_PAID, ex.errorCode)
         }
+
+        @Test
+        fun `결제 실패 시뮬레이션에서 상품 옵션 존재하지 않으면 PRODUCT_OPTION_NOT_FOUND`() {
+            // given
+            val order = createOrder()
+            val paymentSlot = slot<Payment>()
+            every { orderRepository.findById(1L) } returns Optional.of(order)
+            every { paymentRepository.findByOrderId(1L) } returns null
+            every { paymentRepository.save(capture(paymentSlot)) } answers { paymentSlot.captured }
+            every { productOptionRepository.findByIdWithLock(1L) } returns null
+
+            // when / then
+            val ex = assertThrows<CustomException> {
+                paymentService.requestPayment(
+                    userId = 1L,
+                    request = PaymentRequest(orderId = 1L, method = PaymentMethod.CARD, simulateFailure = true),
+                )
+            }
+            assertEquals(ErrorCode.PRODUCT_OPTION_NOT_FOUND, ex.errorCode)
+        }
     }
 
     @Nested

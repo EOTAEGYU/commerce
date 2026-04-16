@@ -10,6 +10,7 @@ import com.example.commerce.product.entity.Product
 import com.example.commerce.product.entity.ProductOption
 import com.example.commerce.product.repository.ProductOptionRepository
 import com.example.commerce.product.repository.ProductRepository
+import com.example.commerce.review.repository.ReviewRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -21,6 +22,7 @@ class ProductService(
     private val productRepository: ProductRepository,
     private val productOptionRepository: ProductOptionRepository,
     private val categoryRepository: CategoryRepository,
+    private val reviewRepository: ReviewRepository,
 ) {
     fun create(request: ProductCreateRequest): ProductResponse {
         if (!categoryRepository.existsById(request.categoryId))
@@ -42,14 +44,28 @@ class ProductService(
     @Transactional(readOnly = true)
     fun getList(categoryId: Long?, keyword: String?, pageable: Pageable): Page<ProductResponse> {
         val pattern = keyword?.takeIf { it.isNotBlank() }?.let { "%${it.lowercase()}%" } ?: "%"
-        return productRepository.search(categoryId, pattern, pageable).map { ProductResponse.from(it) }
+        val productPage = productRepository.search(categoryId, pattern, pageable)
+        val productIds = productPage.content.map { it.id }
+        val statsMap = reviewRepository.findStatsByProductIds(productIds)
+            .associate { row ->
+                val pid = (row[0] as Number).toLong()
+                val avg = (row[1] as Number).toDouble()
+                val cnt = (row[2] as Number).toLong()
+                pid to Pair(avg, cnt)
+            }
+        return productPage.map { product ->
+            val stats = statsMap[product.id]
+            ProductResponse.from(product, stats?.first, stats?.second ?: 0L)
+        }
     }
 
     @Transactional(readOnly = true)
     fun getOne(id: Long): ProductResponse {
         val product = productRepository.findById(id)
             .orElseThrow { CustomException(ErrorCode.PRODUCT_NOT_FOUND) }
-        return ProductResponse.from(product)
+        val averageRating = reviewRepository.findAverageRatingByProductId(id)
+        val reviewCount = reviewRepository.countByProductId(id)
+        return ProductResponse.from(product, averageRating, reviewCount)
     }
 
     fun update(id: Long, request: ProductUpdateRequest): ProductResponse {
