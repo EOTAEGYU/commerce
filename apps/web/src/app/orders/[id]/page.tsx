@@ -9,6 +9,7 @@ import { useAuthStore } from '@/store/auth'
 import type { components } from '@/types/api'
 
 type OrderResponse = components['schemas']['OrderResponse']
+type OrderItem = NonNullable<OrderResponse['items']>[number]
 type PaymentResponse = components['schemas']['PaymentResponse']
 
 const STATUS_CONFIG: Record<string, { label: string; cls: string }> = {
@@ -165,7 +166,7 @@ export default function OrderDetailPage() {
           주문 상품
         </h2>
         <div className="divide-y divide-zinc-100 px-5">
-          {(order.items ?? []).map((item) => (
+          {(order.items ?? []).map((item: OrderItem) => (
             <div key={item.id} className="py-4">
               <div className="flex items-start justify-between gap-4">
                 <div>

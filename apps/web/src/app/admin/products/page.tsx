@@ -95,7 +95,7 @@ function productToForm(p: ProductResponse): ProductFormData {
     price: String(p.price ?? ''),
     categoryId: String(p.categoryId ?? ''),
     imageUrl: p.imageUrl ?? '',
-    options: (p.options ?? []).map(o => ({ size: o.size ?? '', color: o.color ?? '', stock: o.stock ?? 0 })),
+    options: (p.options ?? []).map((o: ProductOptionRequest) => ({ size: o.size ?? '', color: o.color ?? '', stock: o.stock ?? 0 })),
   }
 }
 
@@ -320,7 +320,7 @@ export default function AdminProductsPage() {
     })
   }
 
-  const products = data?.content ?? []
+  const products: ProductResponse[] = data?.content ?? []
   const totalPages = data?.totalPages ?? 1
 
   return (

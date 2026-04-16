@@ -15,4 +15,6 @@ interface ProductRepository : JpaRepository<Product, Long> {
           AND LOWER(p.name) LIKE :pattern
     """)
     fun search(categoryId: Long?, pattern: String, pageable: Pageable): Page<Product>
+
+    fun findByIdIn(ids: List<Long>, pageable: Pageable): Page<Product>
 }

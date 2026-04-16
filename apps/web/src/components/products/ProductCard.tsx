@@ -2,10 +2,16 @@
 
 import Link from 'next/link'
 import type { components } from '@/types/api'
+import LikeButton from './LikeButton'
 
 type ProductResponse = components['schemas']['ProductResponse']
 
-export default function ProductCard({ product }: { product: ProductResponse }) {
+type Props = {
+  product: ProductResponse
+  isLiked?: boolean
+}
+
+export default function ProductCard({ product, isLiked = false }: Props) {
   return (
     <Link href={`/products/${product.id}`} className="group block">
       {/* 이미지 */}
@@ -27,15 +33,9 @@ export default function ProductCard({ product }: { product: ProductResponse }) {
         {/* 호버 overlay */}
         <div className="absolute inset-0 bg-black/0 transition-colors duration-200 group-hover:bg-black/5" />
         {/* 하트 아이콘 */}
-        <button
-          onClick={(e) => e.preventDefault()}
-          className="absolute bottom-2 right-2 rounded-full p-1 text-white/80 transition-colors hover:text-white drop-shadow"
-          aria-label="찜하기"
-        >
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-          </svg>
-        </button>
+        <div className="absolute bottom-2 right-2">
+          <LikeButton productId={product.id!} initialLiked={isLiked} />
+        </div>
       </div>
 
       {/* 텍스트 */}

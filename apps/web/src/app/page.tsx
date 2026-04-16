@@ -1,6 +1,6 @@
 import { serverFetch } from '@/lib/api/server'
 import CategoryFilter from '@/components/products/CategoryFilter'
-import ProductGrid from '@/components/products/ProductGrid'
+import ProductGridWithLikes from '@/components/products/ProductGridWithLikes'
 import PaginationBar from '@/components/products/PaginationBar'
 import type { components } from '@/types/api'
 
@@ -61,7 +61,7 @@ export default async function HomePage({ searchParams }: Props) {
       </div>
 
       <CategoryFilter categories={categories} activeCategoryId={categoryId} keyword={keyword} />
-      <ProductGrid products={productsPage.content ?? []} />
+      <ProductGridWithLikes products={productsPage.content ?? []} />
       <PaginationBar
         totalPages={productsPage.totalPages ?? 1}
         currentPage={productsPage.number ?? 0}

@@ -29,7 +29,8 @@ export default function CartPage() {
   })
 
   // 장바구니 아이템의 고유 productId 목록
-  const productIds = [...new Set((cart?.items ?? []).map((i) => i.productId).filter((id): id is number => !!id))]
+  type CartItem = NonNullable<CartResponse['items']>[number]
+  const productIds = [...new Set((cart?.items ?? []).map((i: CartItem) => i.productId).filter((id): id is number => !!id))]
 
   const productQueries = useQueries({
     queries: productIds.map((id) => ({
@@ -48,9 +49,10 @@ export default function CartPage() {
   })
 
   // CartItem에 상품명/옵션 정보 보강
-  const enrichedItems: CartItemWithProduct[] = (cart?.items ?? []).map((item) => {
+  type ProductOption = NonNullable<ProductResponse['options']>[number]
+  const enrichedItems: CartItemWithProduct[] = (cart?.items ?? []).map((item: CartItem) => {
     const product = productMap.get(item.productId ?? 0)
-    const option = product?.options?.find((o) => o.id === item.productOptionId)
+    const option = product?.options?.find((o: ProductOption) => o.id === item.productOptionId)
     return {
       ...item,
       productName: product?.name ?? `상품 #${item.productId}`,

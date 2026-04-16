@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { serverFetch } from '@/lib/api/server'
 import ProductOptionPicker from '@/components/products/ProductOptionPicker'
+import ProductLikeSection from '@/components/products/ProductLikeSection'
 import type { components } from '@/types/api'
 
 type ProductResponse = components['schemas']['ProductResponse']
@@ -53,9 +54,12 @@ export default async function ProductDetailPage({ params }: Props) {
         <div className="flex flex-col gap-4">
           <div>
             <h1 className="text-2xl font-bold text-zinc-900">{product.name}</h1>
-            <p className="text-xl font-bold text-zinc-900 mt-2">
-              {(product.price ?? 0).toLocaleString('ko-KR')}원
-            </p>
+            <div className="flex items-center gap-2 mt-2">
+              <p className="text-xl font-bold text-zinc-900">
+                {(product.price ?? 0).toLocaleString('ko-KR')}원
+              </p>
+              <ProductLikeSection productId={product.id!} />
+            </div>
           </div>
 
           {product.description && (

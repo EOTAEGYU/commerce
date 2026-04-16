@@ -21,6 +21,7 @@ Kotlin + Spring Boot 4 기반 커머스 백엔드 프로젝트 문서 모음입�
 - [장바구니 (Cart)](domain/cart.md) — 장바구니 관리
 - [주문 (Order)](domain/order.md) — 주문 생성, 상태 전이
 - [결제 (Payment)](domain/payment.md) — 결제 처리 흐름
+- [리뷰 (review)](domain/review.md) - 리뷰 관리
 
 ### Development
 - [시작 가이드](development/getting-started.md) — 로컬 환경 세팅, 실행 방법
