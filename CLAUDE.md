@@ -42,6 +42,7 @@ src/main/kotlin/com/example/commerce/
 ├── payment/    # 결제 (PG 연동)
 ├── review/     # 리뷰 (별점+텍스트, OrderItem 단위)
 ├── like/       # 좋아요 (상품 찜, 토글)
+├── coupon/     # 쿠폰 (템플릿 관리, 발급, 결제 적용)
 └── common/     # 공통 (예외처리, 응답형식, BaseEntity)
 
 ## 아키텍처 패턴
@@ -67,6 +68,7 @@ src/main/kotlin/com/example/commerce/
 7. [x] 결제 (PG Mock, 결제 실패 시 재고 복원, 10분 만료 스케줄러)
 8. [x] 리뷰 (별점+텍스트, OrderItem 단위, 중복 방지)
 9. [x] 좋아요 (상품 찜, 토글, 배치 상태 조회)
+10. [x] 쿠폰 (템플릿 CRUD, 발급, 결제 시 할인 적용)
 
 ## Git 워크플로우 (IMPORTANT)
 - 기능 구현 완료 시 반드시 커밋까지 진행
@@ -144,6 +146,7 @@ src/main/kotlin/com/example/commerce/
 | `src/main/kotlin/com/example/commerce/payment/CLAUDE.md` | 결제 도메인 구조, Mock PG 동작, 실패 처리 흐름, API 엔드포인트 |
 | `src/main/kotlin/com/example/commerce/review/CLAUDE.md` | 리뷰 도메인 구조, 별점 검증, 중복 방지, API 엔드포인트 |
 | `src/main/kotlin/com/example/commerce/like/CLAUDE.md` | 좋아요 도메인 구조, 토글 방식, 배치 상태 조회, API 엔드포인트 |
+| `src/main/kotlin/com/example/commerce/coupon/CLAUDE.md` | 쿠폰 도메인 구조, 발급 규칙, 할인 계산, Optimistic Lock, API 엔드포인트 |
 
 ### 프론트엔드
 | 경로 | 내용 |

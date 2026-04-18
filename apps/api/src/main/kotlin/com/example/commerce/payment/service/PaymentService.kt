@@ -2,6 +2,7 @@ package com.example.commerce.payment.service
 
 import com.example.commerce.common.CustomException
 import com.example.commerce.common.ErrorCode
+import com.example.commerce.coupon.service.CouponService
 import com.example.commerce.order.entity.OrderStatus
 import com.example.commerce.order.repository.OrderRepository
 import com.example.commerce.payment.dto.PaymentRequest
@@ -20,6 +21,7 @@ class PaymentService(
     private val orderRepository: OrderRepository,
     private val paymentRepository: PaymentRepository,
     private val productOptionRepository: ProductOptionRepository,
+    private val couponService: CouponService,
 ) {
     fun requestPayment(userId: Long, request: PaymentRequest): PaymentResponse {
         val order = orderRepository.findById(request.orderId)
@@ -30,11 +32,19 @@ class PaymentService(
         val existingPayment = paymentRepository.findByOrderId(order.id)
         if (existingPayment?.status == PaymentStatus.COMPLETED) throw CustomException(ErrorCode.ORDER_ALREADY_PAID)
 
+        val (discountAmount, usedCouponId) = if (request.couponId != null) {
+            couponService.validateAndApplyCoupon(userId, request.couponId, order)
+        } else {
+            0L to null
+        }
+
         val payment = paymentRepository.save(
             Payment(
                 orderId = order.id,
                 userId = userId,
-                amount = order.totalAmount,
+                amount = order.totalAmount - discountAmount,
+                discountAmount = discountAmount,
+                couponId = usedCouponId,
                 method = request.method,
             )
         )
@@ -51,9 +61,12 @@ class PaymentService(
             order.status = OrderStatus.PAID
             payment.status = PaymentStatus.COMPLETED
             payment.pgTransactionId = UUID.randomUUID().toString()
+            if (usedCouponId != null) {
+                couponService.markAsUsed(usedCouponId, order.id)
+            }
         }
 
-        return PaymentResponse.from(payment)
+        return PaymentResponse.from(payment, order.totalAmount)
     }
 
     @Transactional(readOnly = true)
@@ -61,6 +74,7 @@ class PaymentService(
         val payment = paymentRepository.findByOrderId(orderId)
             ?: throw CustomException(ErrorCode.PAYMENT_NOT_FOUND)
         if (payment.userId != userId) throw CustomException(ErrorCode.ORDER_NOT_OWNED)
-        return PaymentResponse.from(payment)
+        val originalAmount = payment.amount + payment.discountAmount
+        return PaymentResponse.from(payment, originalAmount)
     }
 }

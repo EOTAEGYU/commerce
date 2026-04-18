@@ -49,4 +49,15 @@ enum class ErrorCode(
     REVIEW_NOT_OWNED(HttpStatus.FORBIDDEN, "본인의 리뷰가 아닙니다."),
     ORDER_NOT_DELIVERED(HttpStatus.BAD_REQUEST, "배송 완료된 주문에만 리뷰를 작성할 수 있습니다."),
     INVALID_RATING(HttpStatus.BAD_REQUEST, "별점은 0.5 단위로 0.5 ~ 5.0 사이여야 합니다."),
+
+    // Coupon
+    COUPON_NOT_FOUND(HttpStatus.NOT_FOUND, "쿠폰을 찾을 수 없습니다"),
+    COUPON_NOT_ACTIVE(HttpStatus.BAD_REQUEST, "비활성화된 쿠폰입니다"),
+    COUPON_ALREADY_ISSUED(HttpStatus.CONFLICT, "이미 발급받은 쿠폰입니다"),
+    COUPON_QUANTITY_EXHAUSTED(HttpStatus.CONFLICT, "쿠폰 수량이 소진되었습니다"),
+    COUPON_EXPIRED(HttpStatus.BAD_REQUEST, "만료된 쿠폰입니다"),
+    COUPON_ALREADY_USED(HttpStatus.CONFLICT, "이미 사용된 쿠폰입니다"),
+    COUPON_NOT_OWNED(HttpStatus.FORBIDDEN, "본인의 쿠폰이 아닙니다"),
+    COUPON_MIN_AMOUNT_NOT_MET(HttpStatus.BAD_REQUEST, "최소 주문금액을 충족하지 못했습니다"),
+    COUPON_CATEGORY_NOT_MET(HttpStatus.BAD_REQUEST, "쿠폰 적용 카테고리 조건을 충족하지 못했습니다"),
 }

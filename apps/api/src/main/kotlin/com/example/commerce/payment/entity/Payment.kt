@@ -22,6 +22,12 @@ class Payment(
     @Column(nullable = false)
     val amount: Long,
 
+    @Column(nullable = false)
+    val discountAmount: Long = 0,
+
+    @Column
+    val couponId: Long? = null,
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     val method: PaymentMethod,

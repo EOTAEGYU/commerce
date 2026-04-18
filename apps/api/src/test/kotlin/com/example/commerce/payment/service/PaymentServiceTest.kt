@@ -13,6 +13,7 @@ import com.example.commerce.payment.entity.PaymentStatus
 import com.example.commerce.payment.repository.PaymentRepository
 import com.example.commerce.product.entity.Product
 import com.example.commerce.product.entity.ProductOption
+import com.example.commerce.coupon.service.CouponService
 import com.example.commerce.product.repository.ProductOptionRepository
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
@@ -35,6 +36,7 @@ class PaymentServiceTest {
     @MockK lateinit var orderRepository: OrderRepository
     @MockK lateinit var paymentRepository: PaymentRepository
     @MockK lateinit var productOptionRepository: ProductOptionRepository
+    @MockK lateinit var couponService: CouponService
 
     @InjectMockKs
     lateinit var paymentService: PaymentService
