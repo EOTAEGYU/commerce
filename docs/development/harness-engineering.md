@@ -13,7 +13,7 @@
 | 도메인 컨텍스트 | `apps/api/src/.../도메인/CLAUDE.md` × 11 | 도메인별 Entity, 비즈니스 규칙, ErrorCode |
 | 프론트 컨텍스트 | `apps/web/CLAUDE.md` | Next.js 파일 구조, API 클라이언트, 상태 관리 패턴 |
 | Sub-agent × 3 | `.claude/agents/` | 역할별 전문 AI 에이전트 |
-| 커스텀 커맨드 × 2 | `.claude/commands/` | 반복 워크플로우 자동화 |
+| 커스텀 커맨드 × 3 | `.claude/commands/` | 반복 워크플로우 자동화 |
 | PostToolUse Hook × 2 | `.claude/settings.json` | 파일 저장 시 자동 컴파일 체크 |
 | SessionStart Hook | `.claude/settings.local.json` | 세션 시작 시 메모리 진부화 경고 |
 | Stop Hook | `.claude/settings.local.json` | 작업 완료 시 Windows 알림 |
@@ -81,6 +81,27 @@ CLAUDE.md                          ← 항상 로드 (1,665 토큰)
 ## 3. 커스텀 커맨드
 
 `.claude/commands/` 에 정의된 슬래시 커맨드.
+
+### `/dev` — TDD 도메인 개발 워크플로우
+신규 도메인을 TDD 방식으로 개발하는 7단계 전체 흐름을 자동화한다.
+
+```
+/dev {domain}
+  ↓ Step 1: 도메인 설계 명세 수립 (Entity/Service/API/ErrorCode)
+  ↓ [사용자 확인 — 이 단계만 pause]
+  ↓ Step 2: 테스트 먼저 작성 (unit-test-generator TDD 모드)
+  ↓ Step 3: 구현 코드 작성 (backend-developer)
+  ↓ Step 4: 테스트 통과 확인 (실패 시 자동 수정 반복)
+  ↓ Step 5: 구현 커밋 feat({domain}): ...
+  ↓ Step 6: 문서 최신화 (/doc 흐름)
+  ↓ Step 7: 문서 커밋 + push docs({domain}): ...
+```
+
+`unit-test-generator` 에이전트는 두 가지 모드를 지원한다:
+- **Mode A (기본)**: 구현 파일 존재 → 파일 읽어 테스트 생성
+- **Mode B (TDD)**: 구현 없음 → 설계 명세 기반 테스트 스켈레톤 생성, 실패 상태가 정상
+
+---
 
 ### `/ship` — 배포 파이프라인 자동화
 테스트 → 커밋 메시지 자동 생성 → 커밋 → 푸시 → 결과 요약을 한 번에 처리한다.
