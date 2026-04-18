@@ -1,13 +1,6 @@
 # 프론트엔드 개요
 Next.js 16 (App Router) 기반 패션 자사몰 프론트엔드
-
-## 기술 스택
-- Framework: Next.js 16.2.3 (App Router, webpack — Turbopack은 Windows에서 불안정)
-- Language: TypeScript 5
-- Styling: Tailwind CSS 4 (CSS-first, tailwind.config.js 없음)
-- 서버 상태: TanStack Query 5 (staleTime 60s, retry 1)
-- 클라이언트 상태: Zustand 5 (persist 미들웨어)
-- 타입 생성: openapi-typescript 7
+기술 스택 개요는 루트 CLAUDE.md 참조. 추가 주의: Tailwind CSS 4는 CSS-first(`tailwind.config.js` 없음), TanStack Query `staleTime: 60_000 / retry: 1`.
 
 ## 주요 명령어
 - `npm run dev` : 개발 서버 실행 (localhost:3000, webpack — `next dev --webpack`)

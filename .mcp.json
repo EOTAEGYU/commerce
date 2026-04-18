@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "plan-review": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["tools/plan-review/dist/index.js"],
+      "env": {
+        "GEMINI_API_KEY": "${GEMINI_API_KEY}"
+      }
+    }
+  }
+}

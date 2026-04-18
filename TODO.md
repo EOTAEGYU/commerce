@@ -1,58 +1,84 @@
-# TODO — 리뷰 도메인 구현 (2026-04-16)
+# TODO — 하네스 엔지니어링 개선 (2026-04-18)
 
-## 구현 체크리스트
-
-### Step 1. Review 도메인 생성
-- [x] `review/entity/Review.kt` — BaseEntity 상속, unique FK on order_item_id
-- [x] `review/repository/ReviewRepository.kt` — 배치 통계 쿼리 포함
-- [x] `review/dto/ReviewRequest.kt` — ReviewCreateRequest, ReviewUpdateRequest
-- [x] `review/dto/ReviewResponse.kt` — companion object from() 팩토리 메서드
-- [x] `review/service/ReviewService.kt` — 검증 흐름 (OrderItem 조회 → 소유자 → DELIVERED → 중복 → 별점 단위)
-- [x] `review/controller/ReviewController.kt` — 5개 엔드포인트
-
-### Step 2. ErrorCode 추가
-- [x] `common/ErrorCode.kt` — REVIEW_NOT_FOUND, REVIEW_ALREADY_EXISTS, REVIEW_NOT_OWNED, ORDER_NOT_DELIVERED, INVALID_RATING
-- [x] `common/ErrorCode.kt` — ORDER_ITEM_NOT_FOUND 추가
-
-### Step 3. ProductResponse 통계 필드 추가
-- [x] `product/dto/ProductResponse.kt` — averageRating: Double?, reviewCount: Long 추가
-- [x] `product/service/ProductService.kt` — ReviewRepository 주입, 단건/목록 통계 병합
-
-### Step 4. SecurityConfig 경로 허용
-- [x] `common/security/SecurityConfig.kt` — GET /api/products/** 이미 허용됨 (수정 불필요)
-
-### Step 5. 테스트 작성
-- [x] `review/service/ReviewServiceTest.kt` — MockK, 검증 실패 케이스 + 정상 케이스 (18케이스)
-- [x] `review/controller/ReviewControllerTest.kt` — @WebMvcTest, 상태코드 검증 (17케이스)
-
-### Step 6. 빌드 및 검증
-- [x] `./gradlew build` 빌드 성공 확인
-- [x] `./gradlew test` 전체 테스트 통과 확인 (228 tests)
-
-### Step 7. 커밋 및 문서 최신화
-- [x] `feat(review): 리뷰 도메인 구현` 커밋
-- [x] `docs/domain/review.md` 신규 작성
-- [x] `docs/api/endpoints.md` 리뷰 엔드포인트 추가
-- [x] `docs/database/schema.md` reviews 테이블 + 관계도 업데이트
-- [x] `docs/development/error-codes.md` 리뷰 에러코드 추가
+포트폴리오 보고서에서 도출한 단점/한계 항목을 수정한다.
+우선순위 순으로 나열. 하나씩 완료 후 체크.
 
 ---
 
-## API 엔드포인트
+## ✅ 1. Hook 실행 오버헤드 개선 (높음)
+> 파일 저장마다 compileKotlin이 동기 실행되어 연속 편집 시 블로킹 발생
 
-| Method | Path | Auth | 설명 |
-|--------|------|------|------|
-| POST | /api/reviews | 인증 | 리뷰 작성 |
-| PUT | /api/reviews/{id} | 인증(본인) | 리뷰 수정 |
-| DELETE | /api/reviews/{id} | 인증(본인) | 리뷰 삭제 |
-| GET | /api/products/{productId}/reviews | 공개 | 상품별 리뷰 목록(페이징) |
-| GET | /api/reviews/my | 인증 | 내 리뷰 목록 |
+- [x] Kotlin 컴파일 hook → `asyncRewake: true` 적용 (백그라운드 실행, 에러 시만 Claude 재기동)
+- [x] TypeScript 타입 체크 hook → `asyncRewake: true` 적용
+- [x] 컴파일 성공 → exit 0 (조용히 종료) / 실패 → exit 2 (Claude 깨워서 에러 전달)
 
 ---
 
-## 완료 이력 (이전 작업)
+## ✅ 2. 팀 환경 이식성 분리 (높음)
+> 현재 모든 설정이 settings.local.json(gitignore)에 있어 팀원과 공유 불가
 
-- [x] 공통 모듈, 회원, 카테고리, 상품, 장바구니, 주문, 결제 도메인
-- [x] 멀티모듈 구조, CORS, 관리자 초기화, 상품 이미지 URL
-- [x] 프론트엔드 전체 (Next.js 16 + 무신사 UI 리디자인)
-- [x] 백엔드 보완 (키워드 검색, 프로필 수정, JWT env 처리)
+- [x] `.claude/settings.json` 생성 (팀 공유용 — 커밋 대상)
+  - 공유할 항목: permissions.allow (gradlew, git 명령어)
+  - 공유할 항목: enabledMcpjsonServers
+- [x] settings.local.json에는 개인 항목만 남기기
+  - 개인 항목: Stop hook (Windows 알림 — OS 종속)
+  - 개인 항목: PostToolUse hooks (로컬 환경 경로 의존)
+
+---
+
+## ✅ 3. 에이전트 트리거 정확도 최적화 (중간)
+> Description이 모호하면 잘못된 에이전트가 선택됨
+
+- [x] `backend-developer` description에 트리거 예시 보강 (프론트 요청과 혼동 방지)
+- [x] `frontend-developer` description에 명시적 트리거 키워드 추가
+  - "Next.js", "React", "컴포넌트", "페이지", "프론트"
+- [x] `unit-test-generator` description에 파일 경로 패턴 명시 + 경로 없이도 트리거 가능하도록 개선
+- [ ] skill-creator의 description optimizer로 각 에이전트 description 점수 측정
+
+---
+
+## ✅ 4. Agent Memory 진부화 방지 (중간)
+> 누적된 메모리가 코드 변화와 어긋날 경우 잘못된 가이드가 될 수 있음
+
+- [x] SessionStart hook 추가: 세션 시작 시 agent-memory 파일의 최종 수정일 출력 (30일 초과 시 ⚠️ 경고)
+- [x] unit-test-generator memory 내용 검토 — 현재 코드와 일치 확인 (수정 불필요)
+- [x] backend-developer memory 폴더에 MEMORY.md 인덱스 생성
+- [x] 메모리 감사 주기 정책: 도메인 5개 추가마다 1회, 또는 메모리 파일 수정일 30일 초과 시 자동 경고
+
+---
+
+## ✅ 5. 컨텍스트 창 소비 최적화 (낮음)
+> 작업과 무관한 도메인 CLAUDE.md도 전부 로드되어 컨텍스트 낭비
+
+- [x] 현재 로드되는 CLAUDE.md 목록 및 토큰 크기 측정 (총 ~9,900 토큰, 200k 컨텍스트의 5%)
+- [x] `claudeMdExcludes` 패턴 활용 검토 → 해당 기능 Claude Code에 존재하지 않음 (미지원)
+- [x] 도메인 CLAUDE.md 내용 중 중복 규칙 제거:
+  - 루트 CLAUDE.md `Turbopack` → `webpack` 오류 수정
+  - 루트 CLAUDE.md `## 개발 순서` 제거 (~150 토큰 절감, 이미 완료된 도메인 목록)
+  - apps/web/CLAUDE.md `## 기술 스택` 제거 (~80 토큰 절감, 루트에 이미 있음)
+  - 최종 절감: 928자 → 약 230 토큰 절약
+
+---
+
+## ✅ 6. CLAUDE.md ↔ 코드 동기화 자동화 (낮음)
+> 비즈니스 규칙 변경 시 코드와 CLAUDE.md를 수동으로 동시 업데이트해야 함
+
+- [x] `/doc` 커맨드에 도메인 CLAUDE.md 생성 기능 추가
+  - 신규 도메인 추가 시 git diff 분석 → Entity/비즈니스규칙/API/ErrorCode 자동 추출해 생성
+- [x] `/doc` 커맨드에 ErrorCode 변경 감지 → `docs/development/error-codes.md` 자동 반영
+  - ErrorCode.kt diff에서 새 enum 상수 추출 → 도메인 섹션 테이블에 행 자동 추가
+
+---
+
+## ✅ 완료된 하네스 구성 (참고)
+
+- [x] 루트 CLAUDE.md + 도메인별 CLAUDE.md 12개
+- [x] Sub-agent 3개 (backend-developer, unit-test-generator, frontend-developer)
+- [x] PostToolUse hook — Kotlin 컴파일 자동 체크
+- [x] PostToolUse hook — TypeScript 타입 자동 체크
+- [x] Stop hook — Windows 완료 알림
+- [x] /ship 커맨드 (테스트 → 커밋 → 푸시 자동화)
+- [x] /doc 커맨드 (git diff → 문서 자동 업데이트)
+- [x] plan-review MCP (Gemini 이중 검증)
+- [x] Permissions 10개 사전 허용
+- [x] Agent Memory (unit-test-generator 패턴 누적)

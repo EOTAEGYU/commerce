@@ -12,7 +12,7 @@ Kotlin + Spring Boot 4 기반 의류/신발 패션 자사몰 (백엔드 + 프론
 - Auth: Spring Security + JWT
 
 ### 프론트엔드 (`apps/web/`)
-- Framework: Next.js 16.2.3 (App Router, Turbopack)
+- Framework: Next.js 16.2.3 (App Router, webpack — Turbopack은 Windows에서 불안정)
 - Language: TypeScript 5
 - Styling: Tailwind CSS 4
 - 서버 상태: TanStack Query 5
@@ -58,19 +58,6 @@ src/main/kotlin/com/example/commerce/
 - companion object에 팩토리 메서드 정의
 - JPA Entity는 일반 class 사용 (data class 금지)
 - 금액 필드는 반드시 Long 타입 (원 단위 정수)
-
-## 개발 순서 (현재 진행 중)
-1. [x] 프로젝트 초기 설정 (공통 모듈, DB 연결)
-2. [x] 회원 도메인 (가입, 로그인, JWT)
-3. [x] 카테고리 도메인 (2depth 계층 구조)
-4. [x] 상품 도메인 (CRUD, ProductOption별 재고, Pessimistic Lock)
-5. [x] 장바구니 (Cart/CartItem, CRUD, 재고 확인)
-6. [x] 주문 (Order/OrderItem, 재고 차감/복원, 스냅샷)
-7. [x] 결제 (PG Mock, 결제 실패 시 재고 복원, 10분 만료 스케줄러)
-8. [x] 리뷰 (별점+텍스트, OrderItem 단위, 중복 방지)
-9. [x] 좋아요 (상품 찜, 토글, 배치 상태 조회)
-10. [x] 쿠폰 (템플릿 CRUD, 발급, 결제 시 할인 적용)
-11. [x] 포인트 (리뷰 적립, 구매 1% 적립, 결제 시 사용, Optimistic Lock)
 
 ## Git 워크플로우 (IMPORTANT)
 - 기능 구현 완료 시 반드시 커밋까지 진행

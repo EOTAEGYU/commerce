@@ -28,6 +28,7 @@ Kotlin + Spring Boot 4 기반 커머스 백엔드 프로젝트 문서 모음입�
 - [시작 가이드](development/getting-started.md) — 로컬 환경 세팅, 실행 방법
 - [코드 컨벤션](development/conventions.md) — 코딩 스타일, 커밋 규칙
 - [에러 코드 목록](development/error-codes.md) — 전체 ErrorCode 정의
+- [하네스 엔지니어링](development/harness-engineering.md) — Claude Code 설정, 에이전트, 훅, 메모리 구조
 
 ### Frontend
 - [기술 스택](frontend/stack.md) — Next.js, TypeScript, Tailwind, React Query, Zustand

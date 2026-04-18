@@ -45,3 +45,6 @@ apps/web/src/types/api.generated.ts
 
 ### Environment ###
 .env
+
+### Claude Code ###
+.claude/settings.local.json
