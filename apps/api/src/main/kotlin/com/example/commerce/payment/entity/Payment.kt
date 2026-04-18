@@ -28,6 +28,12 @@ class Payment(
     @Column
     val couponId: Long? = null,
 
+    @Column(nullable = false)
+    val pointAmount: Long = 0,
+
+    @Column(nullable = false)
+    var earnedPoints: Long = 0,
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     val method: PaymentMethod,

@@ -246,28 +246,75 @@
 }
 ```
 
-### POST /api/payments (쿠폰 적용 시)
+### POST /api/payments (쿠폰 + 포인트 적용 시)
 ```json
-// Request (couponId 추가)
+// Request (couponId, pointAmount 추가)
 {
   "orderId": 1,
   "method": "CARD",
   "couponId": 3,
+  "pointAmount": 2000,
   "simulateFailure": false
 }
 
-// Response 200 (discountAmount, originalAmount 추가)
+// Response 200 (discountAmount, pointAmount, earnedPoints, originalAmount 추가)
 {
   "success": true,
   "data": {
     "id": 1,
     "orderId": 1,
-    "amount": 27000,
+    "amount": 25000,
     "originalAmount": 30000,
     "discountAmount": 3000,
+    "pointAmount": 2000,
+    "earnedPoints": 250,
     "couponId": 3,
     "method": "CARD",
     "status": "COMPLETED"
+  },
+  "error": null
+}
+```
+
+---
+
+## 포인트 (Point) — 구현 완료
+
+| Method | URL | 인증 | 설명 |
+|--------|-----|------|------|
+| GET | `/api/points/me` | **필요** | 내 포인트 잔액 조회 |
+| GET | `/api/points/history` | **필요** | 포인트 이력 조회 (페이징) |
+
+### GET /api/points/me
+```json
+// Response 200
+{
+  "success": true,
+  "data": { "balance": 3500 },
+  "error": null
+}
+```
+
+### GET /api/points/history?page=0&size=20
+```json
+// Response 200
+{
+  "success": true,
+  "data": {
+    "content": [
+      {
+        "id": 1,
+        "type": "EARN_REVIEW",
+        "typeDescription": "리뷰 작성 적립",
+        "amount": 300,
+        "balance": 3500,
+        "relatedId": 42,
+        "description": "리뷰 작성 적립",
+        "createdAt": "2026-04-18T10:00:00"
+      }
+    ],
+    "totalElements": 5,
+    "totalPages": 1
   },
   "error": null
 }

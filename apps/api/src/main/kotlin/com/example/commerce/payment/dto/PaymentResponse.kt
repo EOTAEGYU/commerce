@@ -16,9 +16,11 @@ data class PaymentResponse(
     val status: PaymentStatus,
     val pgTransactionId: String?,
     val createdAt: String,
+    val pointAmount: Long,
+    val earnedPoints: Long,
 ) {
     companion object {
-        fun from(payment: Payment, originalAmount: Long): PaymentResponse = PaymentResponse(
+        fun from(payment: Payment, originalAmount: Long, earnedPoints: Long = 0L): PaymentResponse = PaymentResponse(
             id = payment.id,
             orderId = payment.orderId,
             userId = payment.userId,
@@ -30,6 +32,8 @@ data class PaymentResponse(
             status = payment.status,
             pgTransactionId = payment.pgTransactionId,
             createdAt = payment.createdAt.toString(),
+            pointAmount = payment.pointAmount,
+            earnedPoints = earnedPoints,
         )
     }
 }

@@ -48,6 +48,8 @@ class PaymentControllerTest {
         status = PaymentStatus.COMPLETED,
         pgTransactionId = "pg-uuid-1234",
         createdAt = LocalDateTime.now().toString(),
+        pointAmount = 0L,
+        earnedPoints = 200L,
     )
 
     private fun userAuth() = authentication(

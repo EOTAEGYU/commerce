@@ -13,13 +13,19 @@
    │                                │
    │── POST /api/payments ─────────>│
    │   { orderId, method,           │
+   │     couponId?, pointAmount?,   │
    │     simulateFailure }          │
    │                                │ 1. PENDING 주문 확인
    │                                │ 2. 중복 결제 확인
-   │                                │ 3. Payment 생성 (REQUESTED)
-   │                                │ 4. Mock PG 호출
+   │                                │ 3. 쿠폰 검증 + 할인액 계산 (optional)
+   │                                │ 4. 포인트 검증 + 차감 (optional)
+   │                                │ 5. finalAmount = totalAmount - couponDiscount - pointUsed
+   │                                │ 6. Payment 생성 (REQUESTED)
+   │                                │ 7. Mock PG 호출
    │                                │    ├── 성공 → Order = PAID, Payment = COMPLETED
-   │                                │    └── 실패 → 재고 복원, Order = CANCELLED, Payment = FAILED
+   │                                │    │         쿠폰 markAsUsed, 구매 포인트 적립 (1%)
+   │                                │    └── 실패 → 재고 복원, 포인트 환불
+   │                                │              Order = CANCELLED, Payment = FAILED
    │<── { paymentResult } ──────────│
 ```
 
@@ -30,6 +36,8 @@
 - 결제 성공 시 Order 상태를 `PAID`로 변경한다.
 - 결제 실패 시 재고를 복원하고 Order를 `CANCELLED`로 변경한다.
 - `PENDING` 상태가 10분 초과 시 스케줄러가 자동으로 만료 처리한다 (order 도메인 담당).
+- 할인 적용 순서: **쿠폰 → 포인트** (쿠폰 먼저 적용 후 포인트 차감).
+- 결제 실패 시 포인트가 차감된 경우 자동 환불한다.
 
 ## Mock PG 동작
 
@@ -65,11 +73,17 @@
 Payment
 ├── orderId (FK, UNIQUE)   ← 주문당 1건
 ├── userId
-├── amount (Long)
+├── amount (Long)          ← 최종 결제금액 (쿠폰·포인트 차감 후)
+├── discountAmount (Long)  ← 쿠폰 할인액 (기본 0)
+├── couponId (Long?)       ← 사용된 UserCoupon.id
+├── pointAmount (Long)     ← 사용한 포인트 (기본 0)
+├── earnedPoints (Long)    ← 적립된 포인트 (성공 시 채워짐)
 ├── method (PaymentMethod)
 ├── status (PaymentStatus)
-└── pgTransactionId        ← 성공 시 PG 거래 ID 저장 (Mock: null)
+└── pgTransactionId        ← 성공 시 PG 거래 ID 저장 (Mock: UUID)
 ```
+
+> `originalAmount` = `amount + discountAmount + pointAmount` (API 응답 시 계산)
 
 ## API 엔드포인트
 

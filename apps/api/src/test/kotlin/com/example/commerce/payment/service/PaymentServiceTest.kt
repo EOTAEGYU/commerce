@@ -11,6 +11,7 @@ import com.example.commerce.payment.entity.Payment
 import com.example.commerce.payment.entity.PaymentMethod
 import com.example.commerce.payment.entity.PaymentStatus
 import com.example.commerce.payment.repository.PaymentRepository
+import com.example.commerce.point.service.PointService
 import com.example.commerce.product.entity.Product
 import com.example.commerce.product.entity.ProductOption
 import com.example.commerce.coupon.service.CouponService
@@ -19,6 +20,8 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.just
+import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -37,6 +40,7 @@ class PaymentServiceTest {
     @MockK lateinit var paymentRepository: PaymentRepository
     @MockK lateinit var productOptionRepository: ProductOptionRepository
     @MockK lateinit var couponService: CouponService
+    @MockK lateinit var pointService: PointService
 
     @InjectMockKs
     lateinit var paymentService: PaymentService
@@ -85,6 +89,8 @@ class PaymentServiceTest {
             every { orderRepository.findById(1L) } returns Optional.of(order)
             every { paymentRepository.findByOrderId(1L) } returns null
             every { paymentRepository.save(capture(paymentSlot)) } answers { paymentSlot.captured }
+            every { pointService.validateAndUsePoints(1L, 0L, order) } returns 0L
+            every { pointService.earnPurchasePoints(1L, 1L, any()) } just runs
 
             val result = paymentService.requestPayment(
                 userId = 1L,
@@ -107,6 +113,8 @@ class PaymentServiceTest {
             every { paymentRepository.findByOrderId(1L) } returns null
             every { paymentRepository.save(capture(paymentSlot)) } answers { paymentSlot.captured }
             every { productOptionRepository.findByIdWithLock(1L) } returns option
+            every { pointService.validateAndUsePoints(1L, 0L, order) } returns 0L
+            every { pointService.refundPoints(1L, 1L) } just runs
 
             val result = paymentService.requestPayment(
                 userId = 1L,
@@ -173,6 +181,7 @@ class PaymentServiceTest {
             every { paymentRepository.findByOrderId(1L) } returns null
             every { paymentRepository.save(capture(paymentSlot)) } answers { paymentSlot.captured }
             every { productOptionRepository.findByIdWithLock(1L) } returns null
+            every { pointService.validateAndUsePoints(1L, 0L, order) } returns 0L
 
             // when / then
             val ex = assertThrows<CustomException> {

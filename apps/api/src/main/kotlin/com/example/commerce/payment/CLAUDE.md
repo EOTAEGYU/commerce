@@ -40,12 +40,27 @@ simulateFailure = false
 → order.status = PAID
 → payment.status = COMPLETED
 → payment.pgTransactionId = UUID
+→ couponService.markAsUsed() (쿠폰 사용 시)
+→ pointService.earnPurchasePoints() — 실결제액의 1% 적립
 
 // 실패 흐름
 simulateFailure = true
 → 각 OrderItem의 stock 복원 (Pessimistic Lock)
+→ pointService.refundPoints() — 사용한 포인트 환불
 → order.status = CANCELLED
 → payment.status = FAILED
+```
+
+## 결제 금액 계산 흐름
+
+```
+order.totalAmount (원본)
+    ─ couponDiscount  (쿠폰 할인, CouponService.validateAndApplyCoupon)
+    ─ pointUsed       (포인트 차감, PointService.validateAndUsePoints)
+    = payment.amount  (최종 결제금액)
+
+originalAmount (응답 시 역산) = amount + discountAmount + pointAmount
+earnedPoints = finalAmount / 100 (1%, 소수점 버림)
 ```
 
 ## 비즈니스 규칙

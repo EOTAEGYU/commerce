@@ -26,6 +26,7 @@ review/
 1. 리뷰 작성 가능 조건: order.status == DELIVERED + 본인 주문 + 해당 orderItem에 리뷰 미존재
 2. rating 유효성: (rating * 2) % 1 == 0.0 (0.5 단위 검증)
 3. 수정/삭제: 본인 리뷰만 가능
+4. 리뷰 작성 완료 시 **+300 포인트 자동 적립** (`PointService.earnReviewPoints` 호출)
 
 ## API 엔드포인트
 

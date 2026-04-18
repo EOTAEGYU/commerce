@@ -50,6 +50,7 @@ GROUP BY r.productId
 4. 중복 리뷰 확인 → 이미 존재하면 `REVIEW_ALREADY_EXISTS`
 5. 별점 0.5 단위 검증 → 위반 시 `INVALID_RATING`
 6. Review 저장 후 ReviewResponse 반환
+7. **포인트 적립**: `PointService.earnReviewPoints(userId, reviewId)` 호출 → +300P
 
 ### 2. 리뷰 수정 (updateReview)
 1. 리뷰 조회 → 없으면 `REVIEW_NOT_FOUND`

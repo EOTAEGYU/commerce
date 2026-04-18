@@ -8,4 +8,5 @@ data class PaymentRequest(
     @field:NotNull val method: PaymentMethod,
     val simulateFailure: Boolean = false,
     val couponId: Long? = null,
+    val pointAmount: Long? = null,
 )

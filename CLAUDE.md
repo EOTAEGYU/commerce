@@ -43,6 +43,7 @@ src/main/kotlin/com/example/commerce/
 ├── review/     # 리뷰 (별점+텍스트, OrderItem 단위)
 ├── like/       # 좋아요 (상품 찜, 토글)
 ├── coupon/     # 쿠폰 (템플릿 관리, 발급, 결제 적용)
+├── point/      # 포인트 (적립, 사용, 이력 관리)
 └── common/     # 공통 (예외처리, 응답형식, BaseEntity)
 
 ## 아키텍처 패턴
@@ -69,6 +70,7 @@ src/main/kotlin/com/example/commerce/
 8. [x] 리뷰 (별점+텍스트, OrderItem 단위, 중복 방지)
 9. [x] 좋아요 (상품 찜, 토글, 배치 상태 조회)
 10. [x] 쿠폰 (템플릿 CRUD, 발급, 결제 시 할인 적용)
+11. [x] 포인트 (리뷰 적립, 구매 1% 적립, 결제 시 사용, Optimistic Lock)
 
 ## Git 워크플로우 (IMPORTANT)
 - 기능 구현 완료 시 반드시 커밋까지 진행
@@ -147,6 +149,7 @@ src/main/kotlin/com/example/commerce/
 | `src/main/kotlin/com/example/commerce/review/CLAUDE.md` | 리뷰 도메인 구조, 별점 검증, 중복 방지, API 엔드포인트 |
 | `src/main/kotlin/com/example/commerce/like/CLAUDE.md` | 좋아요 도메인 구조, 토글 방식, 배치 상태 조회, API 엔드포인트 |
 | `src/main/kotlin/com/example/commerce/coupon/CLAUDE.md` | 쿠폰 도메인 구조, 발급 규칙, 할인 계산, Optimistic Lock, API 엔드포인트 |
+| `src/main/kotlin/com/example/commerce/point/CLAUDE.md` | 포인트 도메인 구조, 적립/차감 규칙, 결제 연동, Optimistic Lock, API 엔드포인트 |
 
 ### 프론트엔드
 | 경로 | 내용 |

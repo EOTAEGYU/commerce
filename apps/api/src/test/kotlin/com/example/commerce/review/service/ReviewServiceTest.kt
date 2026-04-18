@@ -7,6 +7,7 @@ import com.example.commerce.order.entity.OrderItem
 import com.example.commerce.order.entity.OrderStatus
 import com.example.commerce.order.repository.OrderItemRepository
 import com.example.commerce.order.repository.OrderRepository
+import com.example.commerce.point.service.PointService
 import com.example.commerce.review.dto.ReviewCreateRequest
 import com.example.commerce.review.dto.ReviewUpdateRequest
 import com.example.commerce.review.entity.Review
@@ -17,6 +18,8 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.just
+import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -36,6 +39,7 @@ class ReviewServiceTest {
     @MockK lateinit var orderItemRepository: OrderItemRepository
     @MockK lateinit var orderRepository: OrderRepository
     @MockK lateinit var userRepository: UserRepository
+    @MockK lateinit var pointService: PointService
 
     @InjectMockKs
     lateinit var reviewService: ReviewService
@@ -176,6 +180,7 @@ class ReviewServiceTest {
             every { orderRepository.findById(order.id) } returns Optional.of(order)
             every { reviewRepository.existsByOrderItemId(1L) } returns false
             every { reviewRepository.save(capture(reviewSlot)) } returns savedReview
+            every { pointService.earnReviewPoints(1L, savedReview.id) } just runs
             every { userRepository.findById(1L) } returns Optional.of(user)
 
             val request = ReviewCreateRequest(orderItemId = 1L, rating = 4.5, content = "좋은 상품입니다.")
@@ -203,6 +208,7 @@ class ReviewServiceTest {
             every { orderRepository.findById(order.id) } returns Optional.of(order)
             every { reviewRepository.existsByOrderItemId(1L) } returns false
             every { reviewRepository.save(any()) } returns savedReview
+            every { pointService.earnReviewPoints(1L, savedReview.id) } just runs
             every { userRepository.findById(1L) } returns Optional.of(user)
 
             val request = ReviewCreateRequest(orderItemId = 1L, rating = 4.5, content = "좋은 상품입니다.")

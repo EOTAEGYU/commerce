@@ -60,4 +60,10 @@ enum class ErrorCode(
     COUPON_NOT_OWNED(HttpStatus.FORBIDDEN, "본인의 쿠폰이 아닙니다"),
     COUPON_MIN_AMOUNT_NOT_MET(HttpStatus.BAD_REQUEST, "최소 주문금액을 충족하지 못했습니다"),
     COUPON_CATEGORY_NOT_MET(HttpStatus.BAD_REQUEST, "쿠폰 적용 카테고리 조건을 충족하지 못했습니다"),
+
+    // Point
+    POINT_INSUFFICIENT(HttpStatus.BAD_REQUEST, "포인트 잔액이 부족합니다"),
+    POINT_BELOW_MINIMUM(HttpStatus.BAD_REQUEST, "최소 1,000 포인트 이상 사용해야 합니다"),
+    POINT_EXCEEDS_MAXIMUM(HttpStatus.BAD_REQUEST, "결제금액의 50%를 초과하여 사용할 수 없습니다"),
+    POINT_INVALID_AMOUNT(HttpStatus.BAD_REQUEST, "유효하지 않은 포인트 금액입니다"),
 }

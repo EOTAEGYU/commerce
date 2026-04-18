@@ -5,6 +5,7 @@ import com.example.commerce.common.ErrorCode
 import com.example.commerce.order.entity.OrderStatus
 import com.example.commerce.order.repository.OrderItemRepository
 import com.example.commerce.order.repository.OrderRepository
+import com.example.commerce.point.service.PointService
 import com.example.commerce.review.dto.ReviewCreateRequest
 import com.example.commerce.review.dto.ReviewResponse
 import com.example.commerce.review.dto.ReviewUpdateRequest
@@ -23,6 +24,7 @@ class ReviewService(
     private val orderItemRepository: OrderItemRepository,
     private val orderRepository: OrderRepository,
     private val userRepository: UserRepository,
+    private val pointService: PointService,
 ) {
     @Transactional
     fun createReview(userId: Long, request: ReviewCreateRequest): ReviewResponse {
@@ -49,6 +51,7 @@ class ReviewService(
             content = request.content,
         )
         val saved = reviewRepository.save(review)
+        pointService.earnReviewPoints(userId, saved.id)
         val userName = userRepository.findById(userId).map { it.name }.orElse(null)
         return ReviewResponse.from(saved, userName)
     }
