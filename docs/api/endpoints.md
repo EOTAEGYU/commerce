@@ -203,3 +203,72 @@
   "error": null
 }
 ```
+
+---
+
+## 쿠폰 (Coupon) — 구현 완료
+
+### 사용자 API
+
+| Method | URL | 인증 | 설명 |
+|--------|-----|------|------|
+| POST | `/api/coupons/{templateId}/issue` | **필요** | 쿠폰 발급 |
+| GET | `/api/coupons/me` | **필요** | 내 쿠폰 목록 조회 |
+
+### 관리자 API
+
+| Method | URL | 인증 | 설명 |
+|--------|-----|------|------|
+| POST | `/api/admin/coupons` | **필요** (ADMIN) | 쿠폰 템플릿 생성 |
+| GET | `/api/admin/coupons` | **필요** (ADMIN) | 전체 쿠폰 템플릿 조회 |
+| PATCH | `/api/admin/coupons/{id}/toggle` | **필요** (ADMIN) | 쿠폰 활성화/비활성화 토글 |
+
+### POST /api/admin/coupons
+```json
+// Request
+{
+  "name": "신규회원 10% 할인",
+  "discountType": "RATE",
+  "discountValue": 10,
+  "maxDiscountAmount": 5000,
+  "minOrderAmount": 30000,
+  "categoryId": null,
+  "totalQuantity": 1000,
+  "validFrom": "2026-01-01T00:00:00",
+  "validUntil": "2026-12-31T23:59:59"
+}
+
+// Response 200
+{
+  "success": true,
+  "data": { "id": 1, "name": "신규회원 10% 할인", "discountType": "RATE", ... },
+  "error": null
+}
+```
+
+### POST /api/payments (쿠폰 적용 시)
+```json
+// Request (couponId 추가)
+{
+  "orderId": 1,
+  "method": "CARD",
+  "couponId": 3,
+  "simulateFailure": false
+}
+
+// Response 200 (discountAmount, originalAmount 추가)
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "orderId": 1,
+    "amount": 27000,
+    "originalAmount": 30000,
+    "discountAmount": 3000,
+    "couponId": 3,
+    "method": "CARD",
+    "status": "COMPLETED"
+  },
+  "error": null
+}
+```

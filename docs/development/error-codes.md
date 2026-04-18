@@ -74,6 +74,26 @@
 | `ORDER_NOT_DELIVERED` | 400 | 배송 완료된 주문에만 리뷰를 작성할 수 있습니다. | DELIVERED 상태가 아닌 주문의 OrderItem에 리뷰 작성 |
 | `INVALID_RATING` | 400 | 별점은 0.5 단위로 0.5 ~ 5.0 사이여야 합니다. | 1.3, 2.7 등 0.5 단위가 아닌 별점 입력 |
 
+## 좋아요 (Like)
+
+| 코드 | HTTP 상태 | 메시지 | 발생 상황 |
+|------|----------|--------|----------|
+| `LIKE_NOT_FOUND` | 404 | 존재하지 않는 좋아요입니다. | 좋아요 취소 시 해당 좋아요 없음 |
+
+## 쿠폰 (Coupon)
+
+| 코드 | HTTP 상태 | 메시지 | 발생 상황 |
+|------|----------|--------|----------|
+| `COUPON_NOT_FOUND` | 404 | 쿠폰을 찾을 수 없습니다. | 쿠폰 ID로 조회 실패 |
+| `COUPON_NOT_ACTIVE` | 400 | 비활성화된 쿠폰입니다. | isActive=false 쿠폰 발급 시도 |
+| `COUPON_ALREADY_ISSUED` | 409 | 이미 발급받은 쿠폰입니다. | 동일 쿠폰 중복 발급 시도 |
+| `COUPON_QUANTITY_EXHAUSTED` | 409 | 쿠폰 수량이 소진되었습니다. | 발급 수량 한도 초과 또는 동시 발급 경합 |
+| `COUPON_EXPIRED` | 400 | 만료된 쿠폰입니다. | 유효기간 외 발급/사용 시도 |
+| `COUPON_ALREADY_USED` | 409 | 이미 사용된 쿠폰입니다. | USED/EXPIRED 상태 쿠폰 결제 적용 시도 |
+| `COUPON_NOT_OWNED` | 403 | 본인의 쿠폰이 아닙니다. | 다른 회원의 UserCoupon 사용 시도 |
+| `COUPON_MIN_AMOUNT_NOT_MET` | 400 | 최소 주문금액을 충족하지 못했습니다. | 주문금액 < minOrderAmount |
+| `COUPON_CATEGORY_NOT_MET` | 400 | 쿠폰 적용 카테고리 조건을 충족하지 못했습니다. | 주문에 해당 카테고리 상품 없음 |
+
 ## 사용 방법
 
 ```kotlin

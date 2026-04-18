@@ -194,6 +194,49 @@
 
 ---
 
+## coupon_templates
+
+관리자가 정의하는 쿠폰 정책 테이블.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `id` | BIGINT | PK, AUTO INCREMENT | 쿠폰 템플릿 ID |
+| `name` | VARCHAR | NOT NULL | 쿠폰명 |
+| `discount_type` | VARCHAR | NOT NULL | FIXED(정액) / RATE(정률) |
+| `discount_value` | BIGINT | NOT NULL | 정액: 원 단위 / 정률: % 값 |
+| `max_discount_amount` | BIGINT | NULLABLE | 정률 쿠폰 최대 할인 한도 |
+| `min_order_amount` | BIGINT | NULLABLE | 최소 주문금액 조건 |
+| `category_id` | BIGINT | NULLABLE | 특정 카테고리 제한 (null=전체) |
+| `total_quantity` | INT | NULLABLE | 발급 수량 한도 (null=무제한) |
+| `issued_count` | INT | NOT NULL, DEFAULT 0 | 현재까지 발급된 수량 |
+| `valid_from` | TIMESTAMP | NOT NULL | 쿠폰 사용 시작일 |
+| `valid_until` | TIMESTAMP | NOT NULL | 쿠폰 사용 만료일 |
+| `is_active` | BOOLEAN | NOT NULL, DEFAULT true | 관리자 활성화 여부 |
+| `version` | BIGINT | NOT NULL, DEFAULT 0 | Optimistic Lock 버전 |
+| `created_at` | TIMESTAMP | NOT NULL | |
+| `updated_at` | TIMESTAMP | NOT NULL | |
+
+---
+
+## user_coupons
+
+사용자가 발급받은 쿠폰 인스턴스 테이블.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `id` | BIGINT | PK, AUTO INCREMENT | 사용자 쿠폰 ID |
+| `user_id` | BIGINT | NOT NULL, INDEX | 발급받은 회원 ID |
+| `coupon_template_id` | BIGINT | NOT NULL | 쿠폰 템플릿 ID |
+| `status` | VARCHAR | NOT NULL, DEFAULT 'UNUSED' | UNUSED / USED / EXPIRED |
+| `used_order_id` | BIGINT | NULLABLE | 사용한 주문 ID |
+| `used_at` | TIMESTAMP | NULLABLE | 사용 시각 |
+| `created_at` | TIMESTAMP | NOT NULL | |
+| `updated_at` | TIMESTAMP | NOT NULL | |
+
+- `(user_id, coupon_template_id)` UNIQUE 제약 — 동일 쿠폰 중복 발급 방지
+
+---
+
 ## 엔티티 관계도
 
 ```
@@ -220,6 +263,8 @@ users
   ├──< reviews (user_id)                  1:N — 회원이 작성한 리뷰 목록
   │
   ├──< product_likes (user_id)            1:N — 회원이 찜한 상품 목록
+  │
+  ├──< user_coupons (user_id)             1:N — 회원이 발급받은 쿠폰
   │
   └── carts (user_id, UNIQUE)             1:1 — 회원당 장바구니 1개
           │
