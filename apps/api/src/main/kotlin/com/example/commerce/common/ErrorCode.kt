@@ -66,4 +66,10 @@ enum class ErrorCode(
     POINT_BELOW_MINIMUM(HttpStatus.BAD_REQUEST, "최소 1,000 포인트 이상 사용해야 합니다"),
     POINT_EXCEEDS_MAXIMUM(HttpStatus.BAD_REQUEST, "결제금액의 50%를 초과하여 사용할 수 없습니다"),
     POINT_INVALID_AMOUNT(HttpStatus.BAD_REQUEST, "유효하지 않은 포인트 금액입니다"),
+
+    // Settlement
+    SETTLEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "정산을 찾을 수 없습니다"),
+    SETTLEMENT_ALREADY_EXISTS(HttpStatus.CONFLICT, "해당 날짜의 정산이 이미 존재합니다"),
+    SETTLEMENT_INVALID_STATUS(HttpStatus.BAD_REQUEST, "유효하지 않은 정산 상태 전이입니다"),
+    SETTLEMENT_DATE_INVALID(HttpStatus.BAD_REQUEST, "미래 날짜는 정산할 수 없습니다"),
 }
