@@ -3,8 +3,8 @@ spring:
     name: commerce
   datasource:
     url: jdbc:postgresql://localhost:5432/commerce
-    username: commerce
-    password: commerce1234
+    username: ${DB_USERNAME:commerce}
+    password: ${DB_PASSWORD:commerce1234}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

@@ -193,34 +193,3 @@ npm run generate:types
 
 각 도메인 폴더(`apps/api/src/main/kotlin/.../domain/CLAUDE.md`)에는 해당 도메인의 Entity 구조, 비즈니스 규칙, API 엔드포인트를 정리한 도메인 특화 문서가 있다.
 
----
-
-## 🗺️ 로드맵
-
-### 백엔드
-- [x] 핵심 커머스 도메인 11종 구현
-- [x] 일별 정산 도메인
-- [ ] Redis 캐싱 (상품 목록·상세 조회)
-- [ ] 검색 고도화 (Elasticsearch 또는 Full-text Search)
-- [ ] CI/CD 파이프라인 (GitHub Actions)
-- [ ] 운영 환경 분리 (`ddl-auto: validate`, 환경별 설정)
-
-### 프론트엔드
-- [x] 프로젝트 초기 설정 (Next.js 16 + TanStack Query + Zustand)
-- [ ] 상품 목록·상세 페이지
-- [ ] 장바구니·주문·결제 플로우
-- [ ] 마이페이지 (주문 내역, 리뷰, 포인트, 쿠폰)
-- [ ] 관리자 페이지 (상품·쿠폰·정산 관리)
-
-### 하네스 엔지니어링
-- [x] 전문화 에이전트 3종
-- [x] 커스텀 커맨드 `/dev`, `/doc`, `/ship`
-- [x] PostToolUse Hook (컴파일 자동 검사)
-- [ ] 프론트엔드 `/dev` 커맨드 통합
-- [ ] 성능 회귀 자동 감지 (k6 + Hook 연동)
-
----
-
-## 📄 라이선스
-
-[MIT License](LICENSE)
