@@ -319,3 +319,78 @@
   "error": null
 }
 ```
+
+---
+
+## 정산 (Settlement) — 구현 완료
+
+관리자 전용. 일별 매출 집계 및 상태 관리.
+
+| Method | URL | 인증 | 설명 |
+|--------|-----|------|------|
+| POST | `/api/admin/settlements` | **필요** (ADMIN) | 특정 날짜 정산 수동 생성 |
+| GET | `/api/admin/settlements` | **필요** (ADMIN) | 정산 목록 조회 (from/to/page/size 파라미터) |
+| GET | `/api/admin/settlements/stats` | **필요** (ADMIN) | 기간 집계 통계 (from/to 필수) |
+| GET | `/api/admin/settlements/{id}` | **필요** (ADMIN) | 정산 단건 조회 |
+| PATCH | `/api/admin/settlements/{id}/status` | **필요** (ADMIN) | 정산 상태 변경 (CONFIRMED/PAID) |
+
+### POST /api/admin/settlements
+```json
+// Request
+{ "date": "2026-04-18" }
+
+// Response 201
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "settlementDate": "2026-04-18",
+    "status": "PENDING",
+    "orderCount": 12,
+    "totalOrderAmount": 480000,
+    "totalDiscountAmount": 30000,
+    "totalPointAmount": 10000,
+    "totalNetAmount": 440000,
+    "totalEarnedPoints": 4400,
+    "confirmedAt": null,
+    "paidAt": null,
+    "createdAt": "2026-04-19T00:05:00"
+  },
+  "error": null
+}
+```
+
+### GET /api/admin/settlements/stats?from=2026-04-01&to=2026-04-18
+```json
+// Response 200
+{
+  "success": true,
+  "data": {
+    "from": "2026-04-01",
+    "to": "2026-04-18",
+    "totalDays": 18,
+    "settledDays": 18,
+    "totalOrderCount": 210,
+    "totalOrderAmount": 8400000,
+    "totalDiscountAmount": 420000,
+    "totalPointAmount": 180000,
+    "totalNetAmount": 7800000,
+    "totalEarnedPoints": 78000,
+    "avgDailyNetAmount": 433333
+  },
+  "error": null
+}
+```
+
+### PATCH /api/admin/settlements/{id}/status
+```json
+// Request
+{ "status": "CONFIRMED" }
+
+// Response 200
+{
+  "success": true,
+  "data": { "id": 1, "status": "CONFIRMED", "confirmedAt": "2026-04-19T09:00:00", ... },
+  "error": null
+}
+```

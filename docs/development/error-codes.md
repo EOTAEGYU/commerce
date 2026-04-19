@@ -103,6 +103,15 @@
 | `POINT_EXCEEDS_MAXIMUM` | 400 | 결제금액의 50%를 초과하여 사용할 수 없습니다 | 주문금액 50% 초과 포인트 사용 시도 |
 | `POINT_INVALID_AMOUNT` | 400 | 유효하지 않은 포인트 금액입니다 | 잘못된 포인트 금액 입력 |
 
+## 정산 (Settlement)
+
+| 코드 | HTTP 상태 | 메시지 | 발생 상황 |
+|------|----------|--------|----------|
+| `SETTLEMENT_NOT_FOUND` | 404 | 정산을 찾을 수 없습니다 | id로 정산 조회 실패 |
+| `SETTLEMENT_ALREADY_EXISTS` | 409 | 해당 날짜의 정산이 이미 존재합니다 | 동일 날짜 중복 정산 생성 시도 |
+| `SETTLEMENT_INVALID_STATUS` | 400 | 유효하지 않은 정산 상태 전이입니다 | PENDING→PAID, CONFIRMED→PENDING 등 역방향 전이 시도 |
+| `SETTLEMENT_DATE_INVALID` | 400 | 미래 날짜는 정산할 수 없습니다 | 오늘 이후 날짜로 정산 생성 시도 |
+
 ## 사용 방법
 
 ```kotlin

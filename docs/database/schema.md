@@ -237,6 +237,28 @@
 
 ---
 
+## settlements
+
+일별 매출 정산 테이블. 날짜당 1건만 허용.
+
+| 컬럼 | 타입 | 제약 | 설명 |
+|------|------|------|------|
+| `id` | BIGINT | PK, AUTO INCREMENT | 정산 ID |
+| `settlement_date` | DATE | NOT NULL, UNIQUE | 정산 대상 날짜 |
+| `status` | VARCHAR | NOT NULL, DEFAULT 'PENDING' | PENDING / CONFIRMED / PAID |
+| `order_count` | INT | NOT NULL | 해당 날짜 COMPLETED 결제 건수 |
+| `total_order_amount` | BIGINT | NOT NULL | 총 주문금액 (실결제액 + 할인 + 포인트 역산) |
+| `total_discount_amount` | BIGINT | NOT NULL | 총 쿠폰 할인액 |
+| `total_point_amount` | BIGINT | NOT NULL | 총 포인트 사용액 |
+| `total_net_amount` | BIGINT | NOT NULL | 순매출 (실결제액 합계) |
+| `total_earned_points` | BIGINT | NOT NULL | 총 적립 포인트 |
+| `confirmed_at` | TIMESTAMP | NULLABLE | CONFIRMED 전이 시각 |
+| `paid_at` | TIMESTAMP | NULLABLE | PAID 전이 시각 |
+| `created_at` | TIMESTAMP | NOT NULL | |
+| `updated_at` | TIMESTAMP | NOT NULL | |
+
+---
+
 ## 엔티티 관계도
 
 ```
