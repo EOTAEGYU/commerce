@@ -1,0 +1,123 @@
+package com.example.commerce.product.service
+
+import com.example.commerce.category.repository.CategoryRepository
+import com.example.commerce.common.CustomException
+import com.example.commerce.common.ErrorCode
+import com.example.commerce.product.dto.ProductCreateRequest
+import com.example.commerce.product.dto.ProductResponse
+import com.example.commerce.product.dto.ProductUpdateRequest
+import com.example.commerce.product.entity.Product
+import com.example.commerce.product.entity.ProductOption
+import com.example.commerce.product.repository.ProductOptionRepository
+import com.example.commerce.product.repository.ProductRepository
+import com.example.commerce.review.repository.ReviewRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+
+@Service
+@Transactional
+class ProductService(
+    private val productRepository: ProductRepository,
+    private val productOptionRepository: ProductOptionRepository,
+    private val categoryRepository: CategoryRepository,
+    private val reviewRepository: ReviewRepository,
+) {
+    fun create(request: ProductCreateRequest): ProductResponse {
+        if (!categoryRepository.existsById(request.categoryId))
+            throw CustomException(ErrorCode.CATEGORY_NOT_FOUND)
+
+        val product = Product(
+            name = request.name,
+            description = request.description,
+            price = request.price,
+            categoryId = request.categoryId,
+            imageUrl = request.imageUrl,
+        )
+        request.options.forEach { opt ->
+            product.options.add(ProductOption(product = product, size = opt.size, color = opt.color, stock = opt.stock))
+        }
+        return ProductResponse.from(productRepository.save(product))
+    }
+
+    @Transactional(readOnly = true)
+    fun getList(categoryId: Long?, keyword: String?, pageable: Pageable): Page<ProductResponse> {
+        val pattern = keyword?.takeIf { it.isNotBlank() }?.let { "%${it.lowercase()}%" } ?: "%"
+        val productPage = productRepository.search(categoryId, pattern, pageable)
+        val productIds = productPage.content.map { it.id }
+        val statsMap = reviewRepository.findStatsByProductIds(productIds)
+            .associate { row ->
+                val pid = (row[0] as Number).toLong()
+                val avg = (row[1] as Number).toDouble()
+                val cnt = (row[2] as Number).toLong()
+                pid to Pair(avg, cnt)
+            }
+        return productPage.map { product ->
+            val stats = statsMap[product.id]
+            ProductResponse.from(product, stats?.first, stats?.second ?: 0L)
+        }
+    }
+
+    @Transactional(readOnly = true)
+    fun getOne(id: Long): ProductResponse {
+        val product = productRepository.findById(id)
+            .orElseThrow { CustomException(ErrorCode.PRODUCT_NOT_FOUND) }
+        val averageRating = reviewRepository.findAverageRatingByProductId(id)
+        val reviewCount = reviewRepository.countByProductId(id)
+        return ProductResponse.from(product, averageRating, reviewCount)
+    }
+
+    fun update(id: Long, request: ProductUpdateRequest): ProductResponse {
+        val product = productRepository.findById(id)
+            .orElseThrow { CustomException(ErrorCode.PRODUCT_NOT_FOUND) }
+        if (!categoryRepository.existsById(request.categoryId))
+            throw CustomException(ErrorCode.CATEGORY_NOT_FOUND)
+
+        product.name = request.name
+        product.description = request.description
+        product.price = request.price
+        product.categoryId = request.categoryId
+        product.imageUrl = request.imageUrl
+
+        request.options?.let { newOptions ->
+            val existingByKey = product.options.associateBy { "${it.size}|${it.color}" }
+            val newKeys = newOptions.map { "${it.size}|${it.color}" }.toSet()
+
+            // 요청에 없는 옵션 제거 (orphanRemoval이 DB 삭제 처리)
+            product.options.removeIf { "${it.size}|${it.color}" !in newKeys }
+
+            newOptions.forEach { req ->
+                val key = "${req.size}|${req.color}"
+                val existing = existingByKey[key]
+                if (existing != null) {
+                    existing.stock = req.stock
+                } else {
+                    product.options.add(ProductOption(product = product, size = req.size, color = req.color, stock = req.stock))
+                }
+            }
+        }
+
+        return ProductResponse.from(product)
+    }
+
+    fun delete(id: Long) {
+        if (!productRepository.existsById(id))
+            throw CustomException(ErrorCode.PRODUCT_NOT_FOUND)
+        productRepository.deleteById(id)
+    }
+
+    fun decreaseStock(optionId: Long, quantity: Int) {
+        val option = productOptionRepository.findByIdWithLock(optionId)
+            ?: throw CustomException(ErrorCode.PRODUCT_OPTION_NOT_FOUND)
+        if (option.stock < quantity)
+            throw CustomException(ErrorCode.OUT_OF_STOCK)
+        option.stock -= quantity
+    }
+
+    fun increaseStock(optionId: Long, quantity: Int) {
+        val option = productOptionRepository.findByIdWithLock(optionId)
+            ?: throw CustomException(ErrorCode.PRODUCT_OPTION_NOT_FOUND)
+        option.stock += quantity
+    }
+}

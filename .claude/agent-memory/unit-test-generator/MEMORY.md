@@ -1,0 +1,2 @@
+- [Controller Test Patterns](feedback_controller_test_patterns.md) — Spring Boot 4 import paths, auth setup, csrf, Jackson 3.x ObjectMapper for @WebMvcTest
+- [Service Test Patterns (MockK)](feedback_service_test_patterns.md) — Factory method conventions, dirty-checking verify, Page mocking, userName null-safety path
