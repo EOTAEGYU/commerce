@@ -39,16 +39,26 @@ PENDING → CANCELLED (결제 실패 또는 10분 만료)
 - 주문 생성 시 `ProductOptionRepository.findByIdWithLock(id)` 로 Pessimistic Lock 적용
 - 재고 부족 시 전체 실패 (부분 성공 없음)
 - 취소 가능: PENDING, PAID 상태만
-- PENDING 10분 초과 → 스케줄러가 자동 CANCELLED + 재고 복원 (구현 예정)
+- PENDING 10분 초과 → 스케줄러가 자동 CANCELLED + 재고 복원
 - 주문 생성 완료 후 장바구니 비우기 (`cart.items.clear()`)
+
+## Scheduler
+
+`OrderExpirationScheduler` — 60초 간격으로 실행
+- `findExpiredOrdersWithItems` (JOIN FETCH)로 items를 즉시 로딩하여 LazyInitializationException 방지
+- `@Transactional` 적용으로 전체 처리를 단일 트랜잭션 내에서 수행
+- self-invocation 방지를 위해 `expireSingleOrder` 별도 메서드 제거, 인라인 처리
 
 ## Repository
 
 ```kotlin
 // OrderRepository
 fun findAllByUserIdOrderByCreatedAtDesc(userId: Long): List<Order>
-// 스케줄러용 (구현 예정)
 fun findByStatusAndCreatedAtBefore(status: OrderStatus, dateTime: LocalDateTime): List<Order>
+
+// 스케줄러용 — items JOIN FETCH로 LazyInit 방지
+@Query("SELECT DISTINCT o FROM Order o JOIN FETCH o.items WHERE o.status = :status AND o.createdAt < :dateTime")
+fun findExpiredOrdersWithItems(status: OrderStatus, dateTime: LocalDateTime): List<Order>
 ```
 
 ## 주요 ErrorCode

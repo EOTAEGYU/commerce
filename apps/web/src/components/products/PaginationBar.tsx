@@ -7,9 +7,10 @@ type Props = {
   currentPage: number
   categoryId?: string
   keyword?: string
+  basePath?: string
 }
 
-export default function PaginationBar({ totalPages, currentPage, categoryId, keyword }: Props) {
+export default function PaginationBar({ totalPages, currentPage, categoryId, keyword, basePath = '/' }: Props) {
   const router = useRouter()
 
   if (totalPages <= 1) return null
@@ -20,7 +21,7 @@ export default function PaginationBar({ totalPages, currentPage, categoryId, key
     if (keyword) params.set('keyword', keyword)
     if (page > 0) params.set('page', String(page))
     const query = params.toString()
-    router.push(query ? `/?${query}` : '/')
+    router.push(query ? `${basePath}?${query}` : basePath)
   }
 
   // 현재 페이지 기준 ±2 윈도우
