@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { apiFetch } from '@/lib/api/client'
 import { useAuthStore } from '@/store/auth'
+import SearchOverlay from '@/components/search/SearchOverlay'
 import type { components } from '@/types/api'
 
 type CategoryResponse = components['schemas']['CategoryResponse']
@@ -13,8 +14,7 @@ type CategoryResponse = components['schemas']['CategoryResponse']
 export default function Header() {
   const router = useRouter()
   const { user, clearAuth } = useAuthStore()
-  const [searchOpen, setSearchOpen] = useState(false)
-  const [keyword, setKeyword] = useState('')
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
 
   const { data: categories = [] } = useQuery<CategoryResponse[]>({
     queryKey: ['categories'],
@@ -35,78 +35,50 @@ export default function Header() {
     router.push('/')
   }
 
-  function handleSearch(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const trimmed = keyword.trim()
-    setSearchOpen(false)
-    setKeyword('')
-    if (trimmed) {
-      router.push(`/?keyword=${encodeURIComponent(trimmed)}`)
-    } else {
-      router.push('/')
-    }
-  }
-
   return (
-    <header className="sticky top-0 z-50 border-b border-zinc-100 bg-white">
-      <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-2.5">
+    <>
+      <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      <header className="sticky top-0 z-40 border-b border-zinc-100 bg-white">
+        <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-2.5">
 
-        {/* 로고 */}
-        <Link href="/" className="shrink-0 text-base font-black tracking-widest text-zinc-900 uppercase">
-          FASHN
-        </Link>
+          {/* 로고 */}
+          <Link href="/" className="shrink-0 text-base font-black tracking-widest text-zinc-900 uppercase">
+            FASHN
+          </Link>
 
-        {/* 카테고리 GNB */}
-        <nav className="flex">
-          {categories.map((cat) => (
-            <div key={cat.id} className="group relative">
-              <Link
-                href={`/?categoryId=${cat.id}`}
-                className="block px-3 py-2 text-sm text-zinc-600 transition-colors hover:text-zinc-900"
-              >
-                {cat.name}
-              </Link>
-              {cat.children && cat.children.length > 0 && (
-                <div className="absolute left-0 top-full hidden min-w-40 border-t-2 border-zinc-900 bg-white py-2 shadow-lg group-hover:block">
-                  {(cat.children as CategoryResponse[]).map((child) => (
-                    <Link
-                      key={child.id}
-                      href={`/?categoryId=${child.id}`}
-                      className="block px-4 py-1.5 text-sm text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
-                    >
-                      {child.name}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </nav>
+          {/* 카테고리 GNB */}
+          <nav className="flex">
+            {categories.map((cat) => (
+              <div key={cat.id} className="group relative">
+                <Link
+                  href={`/categories/${cat.id}`}
+                  className="block px-3 py-2 text-sm text-zinc-600 transition-colors hover:text-zinc-900"
+                >
+                  {cat.name}
+                </Link>
+                {cat.children && cat.children.length > 0 && (
+                  <div className="absolute left-0 top-full hidden min-w-40 border-t-2 border-zinc-900 bg-white py-2 shadow-lg group-hover:block">
+                    {(cat.children as CategoryResponse[]).map((child) => (
+                      <Link
+                        key={child.id}
+                        href={`/categories/${child.id}`}
+                        className="block px-4 py-1.5 text-sm text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
+                      >
+                        {child.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </nav>
 
-        {/* 우측 아이콘 영역 */}
-        <div className="ml-auto flex items-center gap-1">
+          {/* 우측 아이콘 영역 */}
+          <div className="ml-auto flex items-center gap-1">
 
-          {/* 검색 — 아이콘 클릭 시 expand */}
-          {searchOpen ? (
-            <form onSubmit={handleSearch} className="flex items-center">
-              <input
-                autoFocus
-                type="text"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-                onBlur={() => { if (!keyword) setSearchOpen(false) }}
-                placeholder="검색어를 입력하세요"
-                className="w-48 border-b border-zinc-900 bg-transparent px-1 py-1 text-sm outline-none placeholder:text-zinc-400"
-              />
-              <button type="submit" className="p-2 text-zinc-600 hover:text-zinc-900">
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </button>
-            </form>
-          ) : (
+            {/* 검색 아이콘 → SearchOverlay 열기 */}
             <button
-              onClick={() => setSearchOpen(true)}
+              onClick={() => setIsSearchOpen(true)}
               className="p-2 text-zinc-500 transition-colors hover:text-zinc-900"
               aria-label="검색"
             >
@@ -114,7 +86,6 @@ export default function Header() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
-          )}
 
           {/* 장바구니 */}
           <Link href="/cart" className="relative p-2 text-zinc-500 transition-colors hover:text-zinc-900" aria-label="장바구니">
@@ -161,8 +132,9 @@ export default function Header() {
               </Link>
             </>
           )}
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   )
 }

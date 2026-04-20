@@ -7,6 +7,14 @@ Next.js 16 (App Router) 기반 패션 자사몰 프론트엔드
 - `npm run build` : 프로덕션 빌드
 - `npm run lint` : ESLint 검사
 - `npm run generate:types` : OpenAPI → 타입 생성 (루트에서 실행, 백엔드 기동 필요)
+- `npx jest --no-coverage` : 단위 테스트 실행 (apps/web 내에서)
+
+## 테스트
+- 테스트 환경: Jest + @testing-library/react + jest-environment-jsdom
+- 설정 파일: `jest.config.js`, `jest.setup.ts`
+- 테스트 위치: `src/__tests__/*.test.tsx`
+- Next.js 모듈 mock: `src/__mocks__/next/` (link, image, navigation)
+- `useRouter`, `usePathname`, `useSearchParams` → jest.fn()으로 mock 처리
 
 ## 폴더 구조
 ```
@@ -16,28 +24,55 @@ src/
 │   │   ├── signin/page.tsx  # 로그인 페이지
 │   │   └── signup/page.tsx  # 회원가입 페이지
 │   ├── products/
-│   │   └── [id]/page.tsx  # 상품 상세 (SSR)
+│   │   └── [id]/page.tsx  # 상품 상세 (SSR) — 갤러리 그리드 + sticky 패널
+│   ├── categories/
+│   │   └── [id]/page.tsx  # 카테고리 목록 (SSR) — 좌측 필터 사이드바 + 4열 그리드
+│   ├── search/
+│   │   └── page.tsx       # 검색 결과 (SSR) — 필터 사이드바 + 4열 그리드
 │   ├── cart/
 │   │   └── page.tsx       # 장바구니 (CSR)
 │   ├── orders/
 │   │   ├── page.tsx       # 주문 목록 (CSR)
 │   │   └── [id]/page.tsx  # 주문 상세 + 결제 (CSR)
-│   ├── admin/             # 관리자 전용 (5단계)
+│   ├── admin/             # 관리자 전용
 │   ├── layout.tsx         # 루트 레이아웃 (Header + main + Footer)
-│   ├── page.tsx           # 상품 목록 (SSR, 카테고리 필터, 페이지네이션)
+│   ├── page.tsx           # 홈 (SSR) — HeroBanner + New Arrivals + Best Sellers + Category 배너
 │   └── providers.tsx      # Provider 조합 (QueryProvider + AuthHydration)
 ├── components/
+│   ├── home/              # 홈 전용 컴포넌트
+│   │   ├── HeroBanner.tsx        # 3슬라이드 자동재생 캐러셀 (클라이언트)
+│   │   ├── HomeSection.tsx       # 섹션 헤더 + 5열 상품 그리드 (서버)
+│   │   └── CategoryBanners.tsx   # 4열 카테고리 배너 (서버)
+│   ├── search/            # 검색 컴포넌트
+│   │   └── SearchOverlay.tsx     # 전체화면 검색 오버레이 (클라이언트)
+│   ├── layout/            # 레이아웃 컴포넌트
+│   │   └── Breadcrumb.tsx        # 브레드크럼 (서버)
 │   ├── products/          # 상품 관련 컴포넌트
 │   │   ├── ProductCard.tsx        # 상품 카드 (서버)
 │   │   ├── ProductGrid.tsx        # 상품 그리드 (서버)
-│   │   ├── CategoryFilter.tsx     # 카테고리 pill 필터 (클라이언트)
+│   │   ├── FilterSidebar.tsx      # 좌측 필터 (카테고리/사이즈/컬러/가격, 클라이언트)
+│   │   ├── AppliedFilters.tsx     # 적용된 필터 칩 (클라이언트)
+│   │   ├── SortDropdown.tsx       # 정렬 드롭다운 (클라이언트)
+│   │   ├── Accordion.tsx          # 아코디언 (클라이언트, PDP용)
+│   │   ├── CategoryFilter.tsx     # 카테고리 pill 필터 (클라이언트, 레거시)
 │   │   ├── PaginationBar.tsx      # 페이지네이션 (클라이언트)
 │   │   ├── ProductOptionPicker.tsx  # 옵션 선택 (클라이언트)
 │   │   └── AddToCartButton.tsx    # 장바구니 담기 mutation (클라이언트)
 │   ├── cart/
 │   │   └── CartItemRow.tsx        # 장바구니 아이템 행 (클라이언트)
-│   ├── Header.tsx         # 상단 네비 (카테고리/주문내역/장바구니/인증)
+│   ├── Header.tsx         # 상단 네비 + SearchOverlay 통합 (카테고리 GNB → /categories/[id])
 │   └── Footer.tsx         # 하단 바
+├── __tests__/             # 단위 테스트 (Jest + @testing-library/react)
+│   ├── Breadcrumb.test.tsx
+│   ├── HeroBanner.test.tsx
+│   ├── HomeSection.test.tsx
+│   ├── CategoryBanners.test.tsx
+│   ├── SearchOverlay.test.tsx
+│   ├── FilterSidebar.test.tsx
+│   ├── AppliedFilters.test.tsx
+│   └── SortDropdown.test.tsx
+├── __mocks__/next/        # Next.js 모듈 mock (테스트용)
+│   ├── link.tsx, image.tsx, navigation.ts
 ├── lib/
 │   └── api/
 │       ├── client.ts      # apiFetch(), ApiError (클라이언트 전용)
