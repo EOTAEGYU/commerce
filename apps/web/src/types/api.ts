@@ -29,3 +29,37 @@ export type PageResponse<T> = {
 // api.generated.ts는 `npm run generate:types`로 생성됨 (직접 수정 금지)
 // 백엔드 미기동 상태에서는 이 파일이 없으므로 타입 생성 후 아래 주석 해제
 export type { components } from './api.generated'
+
+// ─── 수동 정의 타입 (자동 생성 스키마에 없는 응답) ────────────────────────────
+
+export type CouponResponse = {
+  id: number
+  name: string
+  discountType: 'RATE' | 'FIXED'
+  discountValue: number
+  minOrderAmount: number
+  maxDiscountAmount: number | null
+  categoryId: number | null
+  expiresAt: string
+}
+
+export type PointBalanceResponse = {
+  balance: number
+  earnedThisMonth: number
+  usedThisMonth: number
+}
+
+export type PaymentResultResponse = {
+  id: number
+  orderId: number
+  method: string
+  status: 'PENDING' | 'COMPLETED' | 'FAILED'
+  amount: number
+  originalAmount: number
+  discountAmount: number
+  pointAmount: number
+  earnedPoints: number
+  pgTransactionId: string | null
+  failureReason: string | null
+  createdAt: string
+}
