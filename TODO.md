@@ -82,3 +82,30 @@
 - [x] plan-review MCP (Gemini 이중 검증)
 - [x] Permissions 10개 사전 허용
 - [x] Agent Memory (unit-test-generator 패턴 누적)
+
+---
+
+# TODO — 와이어프레임 구현 (2026-04-20)
+
+## ✅ 01. Discovery — Home / Category / Search / PDP
+- [x] Home 메인 페이지 (HeroBanner, New Arrivals, Best Sellers, Category 배너)
+- [x] Category 목록 페이지 (좌측 필터 사이드바 + 4열 그리드)
+- [x] Search 결과 페이지 (필터 사이드바 + 4열 그리드)
+- [x] PDP 상품 상세 페이지 (갤러리 그리드 + sticky 패널)
+
+---
+
+## 02. Cart — Checkout — Payment
+- [ ] 장바구니 페이지 (Classic 레이아웃: 테이블 + 우측 sticky Summary)
+- [ ] 체크아웃 페이지 (배송지 입력, 쿠폰/포인트 선택, 결제수단)
+- [ ] 결제 진행 / 완료 / 실패 상태 페이지
+
+---
+
+## 03. Auth — MyPage
+- [ ] 로그인 / 회원가입 페이지
+- [ ] 마이페이지 홈 대시보드 (통계카드, 진행중 주문, 리뷰 대기)
+- [ ] 주문 목록 / 주문 상세 페이지 (배송 타임라인, 결제내역)
+- [ ] 리뷰 목록 / 리뷰 작성 화면
+- [ ] 위시리스트 페이지 (그리드 레이아웃)
+- [ ] 쿠폰함 / 포인트 이력 페이지

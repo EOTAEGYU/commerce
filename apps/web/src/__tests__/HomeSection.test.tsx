@@ -13,7 +13,7 @@ const makeProducts = (count: number) =>
     id: i + 1,
     name: `상품 ${i + 1}`,
     price: 10000,
-    imageUrl: null,
+    imageUrl: undefined,
     categoryId: 1,
     categoryName: '상의',
     stockQuantity: 10,

@@ -60,9 +60,19 @@ src/main/kotlin/com/example/commerce/
 - 금액 필드는 반드시 Long 타입 (원 단위 정수)
 
 ## Git 워크플로우 (IMPORTANT)
+- **새 작업 시작 전**: 반드시 `feature/작업명` 브랜치를 `dev` 기준으로 생성한다
+  ```bash
+  git checkout dev && git pull origin dev
+  git checkout -b feature/작업명
+  ```
 - 기능 구현 완료 시 반드시 커밋까지 진행
-- 커밋 전 `./gradlew build` 로 빌드 성공 확인
-- 브랜치 전략: feature/기능명 → main PR 머지
+- 커밋 전 빌드/타입 체크 성공 확인
+- **작업 완료 후**: `dev` 브랜치로 PR을 생성하고 merge한다
+  ```bash
+  gh pr create --base dev --title "..." --body "..."
+  gh pr merge --merge --delete-branch
+  ```
+- 브랜치 전략: `feature/작업명` → `dev` PR 머지 → 검증 후 `dev` → `main`
 
 ## 커밋 메시지 규칙 (Conventional Commits)
 - feat: 새 기능

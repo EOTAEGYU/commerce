@@ -5,6 +5,19 @@
 
 ---
 
+## Step 0: feature 브랜치 생성
+
+작업을 시작하기 전에 반드시 `dev` 기준의 feature 브랜치를 생성한다.
+
+```bash
+git checkout dev && git pull origin dev
+git checkout -b feature/{domain}
+```
+
+브랜치 생성 완료 후 "feature/{domain} 브랜치에서 작업을 시작합니다." 출력 후 Step 1 진행.
+
+---
+
 ## Step 1: 도메인 계획 수립
 
 사용자로부터 도메인 설명을 받아 아래 설계 명세를 작성하라.
