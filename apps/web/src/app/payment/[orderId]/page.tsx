@@ -149,7 +149,7 @@ export default function PaymentResultPage() {
         {/* 액션 버튼 */}
         <div className="mt-6 flex gap-3">
           <button
-            onClick={() => router.push(`/orders/${payment.orderId}`)}
+            onClick={() => router.push(`/my/orders/${payment.orderId}`)}
             className="flex-1 rounded-lg border border-zinc-300 py-3 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
           >
             주문 상세 보기

@@ -109,7 +109,7 @@ export default function Header() {
                   관리자
                 </Link>
               )}
-              <Link href="/likes" className="px-2 py-1 text-xs text-zinc-500 hover:text-zinc-900">
+              <Link href="/my/wishlist" className="px-2 py-1 text-xs text-zinc-500 hover:text-zinc-900">
                 찜목록
               </Link>
               <Link href="/orders" className="px-2 py-1 text-xs text-zinc-500 hover:text-zinc-900">
