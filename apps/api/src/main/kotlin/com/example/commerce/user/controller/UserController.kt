@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.*
 class UserController(
     private val userService: UserService,
 ) {
+    @GetMapping("/check/username")
+    fun checkUsername(@RequestParam value: String): ResponseEntity<ApiResponse<Map<String, Boolean>>> =
+        ResponseEntity.ok(ApiResponse.success(userService.checkUsernameDuplicate(value)))
+
     @PostMapping("/signup")
     fun signUp(@Valid @RequestBody request: SignUpRequest): ResponseEntity<ApiResponse<UserResponse>> =
         ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(userService.signUp(request)))

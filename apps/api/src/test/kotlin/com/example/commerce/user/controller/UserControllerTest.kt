@@ -157,7 +157,7 @@ class UserControllerTest {
 
         @Test
         fun `정상 로그인 시 200 및 토큰 반환`() {
-            val request = SignInRequest(email = "test@test.com", password = "password1!")
+            val request = SignInRequest(username = "testuser", password = "password1!")
             given(userService.signIn(any())).willReturn(authResponse)
 
             mockMvc.post("/api/users/signin") {
@@ -174,7 +174,7 @@ class UserControllerTest {
 
         @Test
         fun `잘못된 인증 정보로 로그인 시 401 반환`() {
-            val request = SignInRequest(email = "test@test.com", password = "wrong_password")
+            val request = SignInRequest(username = "testuser", password = "wrong_password")
             given(userService.signIn(any())).willThrow(CustomException(ErrorCode.INVALID_CREDENTIALS))
 
             mockMvc.post("/api/users/signin") {
