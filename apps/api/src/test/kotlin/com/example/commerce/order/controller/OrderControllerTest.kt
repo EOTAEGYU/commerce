@@ -4,6 +4,9 @@ import com.example.commerce.common.CustomException
 import com.example.commerce.common.ErrorCode
 import com.example.commerce.common.security.JwtProvider
 import com.example.commerce.common.security.SecurityConfig
+import com.example.commerce.common.security.oauth2.CustomOAuth2UserService
+import com.example.commerce.common.security.oauth2.OAuth2FailureHandler
+import com.example.commerce.common.security.oauth2.OAuth2SuccessHandler
 import com.example.commerce.order.dto.OrderItemResponse
 import com.example.commerce.order.dto.OrderResponse
 import com.example.commerce.order.entity.OrderStatus
@@ -32,6 +35,9 @@ class OrderControllerTest {
 
     @MockitoBean lateinit var orderService: OrderService
     @MockitoBean lateinit var jwtProvider: JwtProvider
+    @MockitoBean lateinit var customOAuth2UserService: CustomOAuth2UserService
+    @MockitoBean lateinit var oauth2SuccessHandler: OAuth2SuccessHandler
+    @MockitoBean lateinit var oauth2FailureHandler: OAuth2FailureHandler
 
     private val orderItemResponse = OrderItemResponse(
         id = 1L, productId = 1L, productOptionId = 1L,

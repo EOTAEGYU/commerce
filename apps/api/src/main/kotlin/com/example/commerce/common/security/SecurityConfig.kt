@@ -1,5 +1,8 @@
 package com.example.commerce.common.security
 
+import com.example.commerce.common.security.oauth2.CustomOAuth2UserService
+import com.example.commerce.common.security.oauth2.OAuth2FailureHandler
+import com.example.commerce.common.security.oauth2.OAuth2SuccessHandler
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -19,6 +22,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
+    private val customOAuth2UserService: CustomOAuth2UserService,
+    private val oauth2SuccessHandler: OAuth2SuccessHandler,
+    private val oauth2FailureHandler: OAuth2FailureHandler,
 ) {
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
@@ -49,6 +55,8 @@ class SecurityConfig(
                 it.requestMatchers(
                     "/api/users/signup",
                     "/api/users/signin",
+                    "/oauth2/**",
+                    "/login/oauth2/**",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                 ).permitAll()
@@ -60,6 +68,12 @@ class SecurityConfig(
                 it.authenticationEntryPoint { _, response, _ ->
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
                 }
+            }
+            .oauth2Login { oauth2 ->
+                oauth2
+                    .userInfoEndpoint { it.userService(customOAuth2UserService) }
+                    .successHandler(oauth2SuccessHandler)
+                    .failureHandler(oauth2FailureHandler)
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()

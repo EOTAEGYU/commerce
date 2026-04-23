@@ -4,6 +4,9 @@ import com.example.commerce.common.CustomException
 import com.example.commerce.common.ErrorCode
 import com.example.commerce.common.security.JwtProvider
 import com.example.commerce.common.security.SecurityConfig
+import com.example.commerce.common.security.oauth2.CustomOAuth2UserService
+import com.example.commerce.common.security.oauth2.OAuth2FailureHandler
+import com.example.commerce.common.security.oauth2.OAuth2SuccessHandler
 import com.example.commerce.review.dto.ReviewCreateRequest
 import com.example.commerce.review.dto.ReviewResponse
 import com.example.commerce.review.dto.ReviewUpdateRequest
@@ -40,6 +43,9 @@ class ReviewControllerTest {
 
     @MockitoBean lateinit var reviewService: ReviewService
     @MockitoBean lateinit var jwtProvider: JwtProvider
+    @MockitoBean lateinit var customOAuth2UserService: CustomOAuth2UserService
+    @MockitoBean lateinit var oauth2SuccessHandler: OAuth2SuccessHandler
+    @MockitoBean lateinit var oauth2FailureHandler: OAuth2FailureHandler
 
     private val now = LocalDateTime.of(2026, 4, 16, 12, 0, 0)
 

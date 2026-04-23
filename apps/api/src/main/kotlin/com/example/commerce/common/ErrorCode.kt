@@ -69,6 +69,9 @@ enum class ErrorCode(
     POINT_EXCEEDS_MAXIMUM(HttpStatus.BAD_REQUEST, "결제금액의 50%를 초과하여 사용할 수 없습니다"),
     POINT_INVALID_AMOUNT(HttpStatus.BAD_REQUEST, "유효하지 않은 포인트 금액입니다"),
 
+    // OAuth2
+    OAUTH_PROVIDER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "소셜 로그인 처리 중 오류가 발생했습니다."),
+
     // Settlement
     SETTLEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "정산을 찾을 수 없습니다"),
     SETTLEMENT_ALREADY_EXISTS(HttpStatus.CONFLICT, "해당 날짜의 정산이 이미 존재합니다"),

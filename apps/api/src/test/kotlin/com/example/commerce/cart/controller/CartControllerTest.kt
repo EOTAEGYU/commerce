@@ -9,6 +9,9 @@ import com.example.commerce.common.CustomException
 import com.example.commerce.common.ErrorCode
 import com.example.commerce.common.security.JwtProvider
 import com.example.commerce.common.security.SecurityConfig
+import com.example.commerce.common.security.oauth2.CustomOAuth2UserService
+import com.example.commerce.common.security.oauth2.OAuth2FailureHandler
+import com.example.commerce.common.security.oauth2.OAuth2SuccessHandler
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
@@ -39,6 +42,9 @@ class CartControllerTest {
 
     @MockitoBean lateinit var cartService: CartService
     @MockitoBean lateinit var jwtProvider: JwtProvider
+    @MockitoBean lateinit var customOAuth2UserService: CustomOAuth2UserService
+    @MockitoBean lateinit var oauth2SuccessHandler: OAuth2SuccessHandler
+    @MockitoBean lateinit var oauth2FailureHandler: OAuth2FailureHandler
 
     private val cartItemResponse = CartItemResponse(
         id = 1L, productId = 1L, productOptionId = 1L, quantity = 2, price = 10000L, totalPrice = 20000L,

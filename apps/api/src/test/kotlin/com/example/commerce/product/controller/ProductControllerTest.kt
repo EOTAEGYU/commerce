@@ -4,6 +4,9 @@ import com.example.commerce.common.CustomException
 import com.example.commerce.common.ErrorCode
 import com.example.commerce.common.security.JwtProvider
 import com.example.commerce.common.security.SecurityConfig
+import com.example.commerce.common.security.oauth2.CustomOAuth2UserService
+import com.example.commerce.common.security.oauth2.OAuth2FailureHandler
+import com.example.commerce.common.security.oauth2.OAuth2SuccessHandler
 import com.example.commerce.product.dto.ProductCreateRequest
 import com.example.commerce.product.dto.ProductOptionRequest
 import com.example.commerce.product.dto.ProductOptionResponse
@@ -42,6 +45,9 @@ class ProductControllerTest {
 
     @MockitoBean lateinit var productService: ProductService
     @MockitoBean lateinit var jwtProvider: JwtProvider
+    @MockitoBean lateinit var customOAuth2UserService: CustomOAuth2UserService
+    @MockitoBean lateinit var oauth2SuccessHandler: OAuth2SuccessHandler
+    @MockitoBean lateinit var oauth2FailureHandler: OAuth2FailureHandler
 
     private val optionResponse = ProductOptionResponse(id = 1L, size = "M", color = "블랙", stock = 10)
     private val productResponse = ProductResponse(
