@@ -7,6 +7,7 @@ type AuthUser = {
   email: string
   name: string
   role: 'USER' | 'ADMIN'
+  username?: string  // 소셜 로그인 계정은 없을 수 있어 optional
 }
 
 type AuthStore = {

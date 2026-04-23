@@ -11,7 +11,7 @@ function SignInInner() {
   const searchParams = useSearchParams()
   const setAuth = useAuthStore((s) => s.setAuth)
 
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState('')
@@ -25,10 +25,10 @@ function SignInInner() {
     try {
       const { accessToken } = await apiFetch<{ accessToken: string; tokenType: string }>(
         '/api/users/signin',
-        { method: 'POST', body: JSON.stringify({ email, password }) }
+        { method: 'POST', body: JSON.stringify({ username, password }) }
       )
 
-      const user = await apiFetch<{ id: number; email: string; name: string; role: 'USER' | 'ADMIN' }>(
+      const user = await apiFetch<{ id: number; email: string; name: string; role: 'USER' | 'ADMIN'; username?: string }>(
         '/api/users/me',
         { headers: { Authorization: `Bearer ${accessToken}` } }
       )
@@ -41,7 +41,7 @@ function SignInInner() {
       if (err instanceof ApiError) {
         setError(
           err.code === 'INVALID_CREDENTIALS'
-            ? '이메일 또는 비밀번호가 올바르지 않습니다.'
+            ? '아이디 또는 비밀번호가 올바르지 않습니다.'
             : err.message
         )
       } else {
@@ -76,21 +76,21 @@ function SignInInner() {
 
         {/* 폼 */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {/* 이메일 */}
+          {/* 아이디 */}
           <div>
             <label
-              htmlFor="email"
+              htmlFor="username"
               className="block text-[10px] uppercase tracking-widest text-zinc-400 font-mono mb-1"
             >
-              Email
+              아이디
             </label>
             <input
-              id="email"
-              type="email"
+              id="username"
+              type="text"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@email.com"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="아이디를 입력하세요"
               className="w-full border border-zinc-200 rounded px-3.5 py-3 text-sm text-zinc-800 outline-none focus:border-zinc-500"
             />
           </div>

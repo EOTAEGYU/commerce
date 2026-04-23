@@ -25,6 +25,32 @@ class UserRepositoryTest {
             User(email = email, password = "encoded_password", name = "홍길동", role = UserRole.USER)
         )
 
+    private fun saveUserWithUsername(username: String, email: String = "test@test.com") =
+        userRepository.save(
+            User(email = email, password = "encoded_password", name = "홍길동", role = UserRole.USER, username = username)
+        )
+
+    @Nested
+    inner class FindByUsername {
+
+        @Test
+        fun `저장된 username으로 조회 시 User 반환`() {
+            saveUserWithUsername("hong1234")
+
+            val result = userRepository.findByUsername("hong1234")
+
+            assertNotNull(result)
+            assertEquals("hong1234", result!!.username)
+        }
+
+        @Test
+        fun `존재하지 않는 username 조회 시 null 반환`() {
+            val result = userRepository.findByUsername("nouser")
+
+            assertNull(result)
+        }
+    }
+
     @Nested
     inner class FindByEmail {
 

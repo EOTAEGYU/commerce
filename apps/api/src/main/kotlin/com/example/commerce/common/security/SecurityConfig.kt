@@ -55,6 +55,7 @@ class SecurityConfig(
                 it.requestMatchers(
                     "/api/users/signup",
                     "/api/users/signin",
+                    "/api/users/check/username",
                     "/oauth2/**",
                     "/login/oauth2/**",
                     "/swagger-ui/**",

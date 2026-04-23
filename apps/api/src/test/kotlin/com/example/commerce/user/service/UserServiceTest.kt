@@ -131,11 +131,11 @@ class UserServiceTest {
 
         @Test
         fun `정상 로그인 시 AccessToken 반환`() {
-            val request = SignInRequest(email = "test@test.com", password = "password1!")
+            val request = SignInRequest(username = "testuser", password = "password1!")
             val user = createUser()
             val token = "jwt.token.value"
 
-            every { userRepository.findByEmail(request.email) } returns user
+            every { userRepository.findByUsername(request.username) } returns user
             every { passwordEncoder.matches(request.password, "encoded_password") } returns true
             every { jwtProvider.generateToken(user) } returns token
 
@@ -146,10 +146,10 @@ class UserServiceTest {
         }
 
         @Test
-        fun `존재하지 않는 이메일로 로그인 시 INVALID_CREDENTIALS 예외 발생`() {
-            val request = SignInRequest(email = "none@test.com", password = "password1!")
+        fun `존재하지 않는 아이디로 로그인 시 INVALID_CREDENTIALS 예외 발생`() {
+            val request = SignInRequest(username = "nouser", password = "password1!")
 
-            every { userRepository.findByEmail(request.email) } returns null
+            every { userRepository.findByUsername(request.username) } returns null
 
             val exception = assertThrows<CustomException> { userService.signIn(request) }
             assertEquals(ErrorCode.INVALID_CREDENTIALS, exception.errorCode)
@@ -157,10 +157,10 @@ class UserServiceTest {
 
         @Test
         fun `비밀번호 불일치 시 INVALID_CREDENTIALS 예외 발생`() {
-            val request = SignInRequest(email = "test@test.com", password = "wrong_password")
+            val request = SignInRequest(username = "testuser", password = "wrong_password")
             val user = createUser()
 
-            every { userRepository.findByEmail(request.email) } returns user
+            every { userRepository.findByUsername(request.username) } returns user
             every { passwordEncoder.matches(request.password, "encoded_password") } returns false
 
             val exception = assertThrows<CustomException> { userService.signIn(request) }
@@ -169,17 +169,39 @@ class UserServiceTest {
 
         @Test
         fun `password가 null인 사용자 로그인 시 INVALID_CREDENTIALS 예외 발생`() {
-            val request = SignInRequest(email = "oauth@test.com", password = "any_password")
+            val request = SignInRequest(username = "oauthuser", password = "any_password")
             val oauthUser = User(
                 email = "oauth@test.com",
                 password = null,
                 name = "OAuth 사용자",
             )
 
-            every { userRepository.findByEmail(request.email) } returns oauthUser
+            every { userRepository.findByUsername(request.username) } returns oauthUser
 
             val exception = assertThrows<CustomException> { userService.signIn(request) }
             assertEquals(ErrorCode.INVALID_CREDENTIALS, exception.errorCode)
+        }
+    }
+
+    @Nested
+    inner class CheckUsernameDuplicate {
+
+        @Test
+        fun `사용 가능한 username 조회 시 available true 반환`() {
+            every { userRepository.existsByUsername("newuser") } returns false
+
+            val result = userService.checkUsernameDuplicate("newuser")
+
+            assertEquals(true, result["available"])
+        }
+
+        @Test
+        fun `이미 사용 중인 username 조회 시 available false 반환`() {
+            every { userRepository.existsByUsername("hong1234") } returns true
+
+            val result = userService.checkUsernameDuplicate("hong1234")
+
+            assertEquals(false, result["available"])
         }
     }
 

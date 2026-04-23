@@ -12,30 +12,53 @@ function SignUpInner() {
   const setAuth = useAuthStore((s) => s.setAuth)
 
   const [name, setName] = useState('')
+  const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [birthDate, setBirthDate] = useState('')
+  const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  async function handleCheckUsername() {
+    if (!username) return
+    setUsernameStatus('checking')
+    try {
+      const result = await apiFetch<{ available: boolean }>(
+        `/api/users/check/username?value=${encodeURIComponent(username)}`
+      )
+      setUsernameStatus(result.available ? 'available' : 'taken')
+    } catch {
+      setUsernameStatus('idle')
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+
+    if (usernameStatus !== 'available') {
+      setError('아이디 중복 확인을 완료해주세요.')
+      return
+    }
+
     setLoading(true)
 
     try {
       // 1) 회원가입
       await apiFetch('/api/users/signup', {
         method: 'POST',
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, username, email, password, phoneNumber, birthDate }),
       })
 
       // 2) 자동 로그인 — 회원가입 직후 signin API 재호출
       const { accessToken } = await apiFetch<{ accessToken: string; tokenType: string }>(
         '/api/users/signin',
-        { method: 'POST', body: JSON.stringify({ email, password }) }
+        { method: 'POST', body: JSON.stringify({ username, password }) }
       )
 
-      const user = await apiFetch<{ id: number; email: string; name: string; role: 'USER' | 'ADMIN' }>(
+      const user = await apiFetch<{ id: number; email: string; name: string; role: 'USER' | 'ADMIN'; username?: string }>(
         '/api/users/me',
         { headers: { Authorization: `Bearer ${accessToken}` } }
       )
@@ -49,6 +72,10 @@ function SignUpInner() {
         setError(
           err.code === 'DUPLICATE_EMAIL'
             ? '이미 사용 중인 이메일입니다.'
+            : err.code === 'DUPLICATE_USERNAME'
+            ? '이미 사용 중인 아이디입니다.'
+            : err.code === 'DUPLICATE_PHONE'
+            ? '이미 사용 중인 전화번호입니다.'
             : err.message
         )
       } else {
@@ -102,6 +129,41 @@ function SignUpInner() {
             />
           </div>
 
+          {/* 아이디 */}
+          <div>
+            <label
+              htmlFor="username"
+              className="block text-[10px] uppercase tracking-widest text-zinc-400 font-mono mb-1"
+            >
+              아이디
+            </label>
+            <div className="flex gap-2">
+              <input
+                id="username"
+                type="text"
+                required
+                value={username}
+                onChange={(e) => { setUsername(e.target.value); setUsernameStatus('idle') }}
+                placeholder="영문 소문자, 숫자 4~16자"
+                className="flex-1 border border-zinc-200 rounded px-3.5 py-3 text-sm text-zinc-800 outline-none focus:border-zinc-500"
+              />
+              <button
+                type="button"
+                onClick={handleCheckUsername}
+                disabled={usernameStatus === 'checking' || !username}
+                className="px-4 py-3 text-sm border border-zinc-200 rounded hover:bg-zinc-50 disabled:opacity-50 whitespace-nowrap transition-colors"
+              >
+                {usernameStatus === 'checking' ? '확인 중...' : '중복 확인'}
+              </button>
+            </div>
+            {usernameStatus === 'available' && (
+              <p className="mt-1 text-xs text-green-600">사용 가능한 아이디입니다.</p>
+            )}
+            {usernameStatus === 'taken' && (
+              <p className="mt-1 text-xs text-red-500">이미 사용 중인 아이디입니다.</p>
+            )}
+          </div>
+
           {/* 이메일 */}
           <div>
             <label
@@ -137,6 +199,43 @@ function SignUpInner() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="8자 이상, 숫자/영문 포함"
+              className="w-full border border-zinc-200 rounded px-3.5 py-3 text-sm text-zinc-800 outline-none focus:border-zinc-500"
+            />
+          </div>
+
+          {/* 전화번호 */}
+          <div>
+            <label
+              htmlFor="phoneNumber"
+              className="block text-[10px] uppercase tracking-widest text-zinc-400 font-mono mb-1"
+            >
+              전화번호
+            </label>
+            <input
+              id="phoneNumber"
+              type="text"
+              required
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              placeholder="010-1234-5678"
+              className="w-full border border-zinc-200 rounded px-3.5 py-3 text-sm text-zinc-800 outline-none focus:border-zinc-500"
+            />
+          </div>
+
+          {/* 생년월일 */}
+          <div>
+            <label
+              htmlFor="birthDate"
+              className="block text-[10px] uppercase tracking-widest text-zinc-400 font-mono mb-1"
+            >
+              생년월일
+            </label>
+            <input
+              id="birthDate"
+              type="date"
+              required
+              value={birthDate}
+              onChange={(e) => setBirthDate(e.target.value)}
               className="w-full border border-zinc-200 rounded px-3.5 py-3 text-sm text-zinc-800 outline-none focus:border-zinc-500"
             />
           </div>

@@ -43,13 +43,17 @@ class UserService(
     }
 
     fun signIn(request: SignInRequest): AuthResponse {
-        val user = userRepository.findByEmail(request.email)
+        val user = userRepository.findByUsername(request.username)
             ?: throw CustomException(ErrorCode.INVALID_CREDENTIALS)
         val rawPassword = user.password ?: throw CustomException(ErrorCode.INVALID_CREDENTIALS)
         if (!passwordEncoder.matches(request.password, rawPassword))
             throw CustomException(ErrorCode.INVALID_CREDENTIALS)
         return AuthResponse(accessToken = jwtProvider.generateToken(user))
     }
+
+    @Transactional(readOnly = true)
+    fun checkUsernameDuplicate(username: String): Map<String, Boolean> =
+        mapOf("available" to !userRepository.existsByUsername(username))
 
     @Transactional(readOnly = true)
     fun getMe(userId: Long): UserResponse {
