@@ -24,6 +24,10 @@ class UserService(
     fun signUp(request: SignUpRequest): UserResponse {
         if (userRepository.existsByEmail(request.email))
             throw CustomException(ErrorCode.DUPLICATE_EMAIL)
+        if (userRepository.existsByUsername(request.username))
+            throw CustomException(ErrorCode.DUPLICATE_USERNAME)
+        if (userRepository.existsByPhoneNumber(request.phoneNumber))
+            throw CustomException(ErrorCode.DUPLICATE_PHONE)
 
         val encodedPassword = passwordEncoder.encode(request.password)
             ?: throw CustomException(ErrorCode.INTERNAL_SERVER_ERROR)
@@ -31,6 +35,9 @@ class UserService(
             email = request.email,
             password = encodedPassword,
             name = request.name,
+            username = request.username,
+            phoneNumber = request.phoneNumber,
+            birthDate = request.birthDate,
         )
         return UserResponse.from(userRepository.save(user))
     }
@@ -38,7 +45,8 @@ class UserService(
     fun signIn(request: SignInRequest): AuthResponse {
         val user = userRepository.findByEmail(request.email)
             ?: throw CustomException(ErrorCode.INVALID_CREDENTIALS)
-        if (!passwordEncoder.matches(request.password, user.password))
+        val rawPassword = user.password ?: throw CustomException(ErrorCode.INVALID_CREDENTIALS)
+        if (!passwordEncoder.matches(request.password, rawPassword))
             throw CustomException(ErrorCode.INVALID_CREDENTIALS)
         return AuthResponse(accessToken = jwtProvider.generateToken(user))
     }
@@ -54,6 +62,21 @@ class UserService(
         val user = userRepository.findById(userId)
             .orElseThrow { CustomException(ErrorCode.USER_NOT_FOUND) }
         user.name = request.name
+
+        request.username?.let { newUsername ->
+            if (newUsername != user.username && userRepository.existsByUsername(newUsername))
+                throw CustomException(ErrorCode.DUPLICATE_USERNAME)
+            user.username = newUsername
+        }
+
+        request.phoneNumber?.let { newPhone ->
+            if (newPhone != user.phoneNumber && userRepository.existsByPhoneNumber(newPhone))
+                throw CustomException(ErrorCode.DUPLICATE_PHONE)
+            user.phoneNumber = newPhone
+        }
+
+        request.birthDate?.let { user.birthDate = it }
+
         return UserResponse.from(user)
     }
 }

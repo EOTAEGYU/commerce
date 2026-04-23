@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
 import tools.jackson.databind.ObjectMapper
+import java.time.LocalDate
 
 @WebMvcTest(UserController::class)
 @Import(SecurityConfig::class)
@@ -39,7 +40,15 @@ class UserControllerTest {
     @MockitoBean lateinit var userService: UserService
     @MockitoBean lateinit var jwtProvider: JwtProvider
 
-    private val userResponse = UserResponse(id = 1L, email = "test@test.com", name = "홍길동", role = "USER")
+    private val userResponse = UserResponse(
+        id = 1L,
+        email = "test@test.com",
+        name = "홍길동",
+        role = "USER",
+        username = "hong1234",
+        phoneNumber = "010-1234-5678",
+        birthDate = LocalDate.of(1990, 1, 1),
+    )
     private val authResponse = AuthResponse(accessToken = "jwt.token.value")
 
     private fun auth() = authentication(
@@ -51,7 +60,14 @@ class UserControllerTest {
 
         @Test
         fun `정상 회원가입 시 201 반환`() {
-            val request = SignUpRequest(email = "test@test.com", password = "password1!", name = "홍길동")
+            val request = SignUpRequest(
+                email = "test@test.com",
+                password = "password1!",
+                name = "홍길동",
+                username = "hong1234",
+                phoneNumber = "010-1234-5678",
+                birthDate = LocalDate.of(1990, 1, 1),
+            )
             given(userService.signUp(any())).willReturn(userResponse)
 
             mockMvc.post("/api/users/signup") {
@@ -67,7 +83,14 @@ class UserControllerTest {
 
         @Test
         fun `이메일 형식 오류 시 400 반환`() {
-            val request = SignUpRequest(email = "invalid-email", password = "password1!", name = "홍길동")
+            val request = SignUpRequest(
+                email = "invalid-email",
+                password = "password1!",
+                name = "홍길동",
+                username = "hong1234",
+                phoneNumber = "010-1234-5678",
+                birthDate = LocalDate.of(1990, 1, 1),
+            )
 
             mockMvc.post("/api/users/signup") {
                 contentType = MediaType.APPLICATION_JSON
@@ -81,7 +104,14 @@ class UserControllerTest {
 
         @Test
         fun `비밀번호 8자 미만 시 400 반환`() {
-            val request = SignUpRequest(email = "test@test.com", password = "short", name = "홍길동")
+            val request = SignUpRequest(
+                email = "test@test.com",
+                password = "short",
+                name = "홍길동",
+                username = "hong1234",
+                phoneNumber = "010-1234-5678",
+                birthDate = LocalDate.of(1990, 1, 1),
+            )
 
             mockMvc.post("/api/users/signup") {
                 contentType = MediaType.APPLICATION_JSON
@@ -95,7 +125,14 @@ class UserControllerTest {
 
         @Test
         fun `이메일 중복 시 409 반환`() {
-            val request = SignUpRequest(email = "test@test.com", password = "password1!", name = "홍길동")
+            val request = SignUpRequest(
+                email = "test@test.com",
+                password = "password1!",
+                name = "홍길동",
+                username = "hong1234",
+                phoneNumber = "010-1234-5678",
+                birthDate = LocalDate.of(1990, 1, 1),
+            )
             given(userService.signUp(any())).willThrow(CustomException(ErrorCode.DUPLICATE_EMAIL))
 
             mockMvc.post("/api/users/signup") {
@@ -176,7 +213,15 @@ class UserControllerTest {
         @Test
         fun `인증된 사용자 PUT 요청 시 200 및 수정된 프로필 반환`() {
             val request = UpdateProfileRequest(name = "김철수")
-            val updatedResponse = UserResponse(id = 1L, email = "test@test.com", name = "김철수", role = "USER")
+            val updatedResponse = UserResponse(
+                id = 1L,
+                email = "test@test.com",
+                name = "김철수",
+                role = "USER",
+                username = "hong1234",
+                phoneNumber = "010-1234-5678",
+                birthDate = LocalDate.of(1990, 1, 1),
+            )
             given(userService.updateProfile(any(), any())).willReturn(updatedResponse)
 
             mockMvc.put("/api/users/me") {

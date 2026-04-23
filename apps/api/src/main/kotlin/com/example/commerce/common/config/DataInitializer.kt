@@ -8,6 +8,7 @@ import com.example.commerce.product.repository.ProductRepository
 import com.example.commerce.user.entity.User
 import com.example.commerce.user.entity.UserRole
 import com.example.commerce.user.repository.UserRepository
+import java.time.LocalDate
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Profile
@@ -38,6 +39,9 @@ class DataInitializer(
                     password = passwordEncoder.encode("admin1234")!!,
                     name = "관리자",
                     role = UserRole.ADMIN,
+                    username = "admin",
+                    phoneNumber = "010-0000-0000",
+                    birthDate = LocalDate.of(1990, 1, 1),
                 ),
             )
         }

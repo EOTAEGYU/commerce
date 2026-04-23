@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.security.crypto.password.PasswordEncoder
+import java.time.LocalDate
 import java.util.Optional
 
 @ExtendWith(MockKExtension::class)
@@ -37,7 +38,19 @@ class UserServiceTest {
         password = "encoded_password",
         name = "홍길동",
         role = UserRole.USER,
+        username = "hong1234",
+        phoneNumber = "010-1234-5678",
+        birthDate = LocalDate.of(1990, 1, 1),
         id = id,
+    )
+
+    private fun signUpRequest() = SignUpRequest(
+        email = "test@test.com",
+        password = "password1!",
+        name = "홍길동",
+        username = "hong1234",
+        phoneNumber = "010-1234-5678",
+        birthDate = LocalDate.of(1990, 1, 1),
     )
 
     @Nested
@@ -45,10 +58,12 @@ class UserServiceTest {
 
         @Test
         fun `정상 회원가입 시 UserResponse 반환`() {
-            val request = SignUpRequest(email = "test@test.com", password = "password1!", name = "홍길동")
+            val request = signUpRequest()
             val savedUser = createUser()
 
             every { userRepository.existsByEmail(request.email) } returns false
+            every { userRepository.existsByUsername(request.username) } returns false
+            every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
             every { passwordEncoder.encode(request.password) } returns "encoded_password"
             every { userRepository.save(any()) } returns savedUser
 
@@ -62,7 +77,7 @@ class UserServiceTest {
 
         @Test
         fun `이메일 중복 시 DUPLICATE_EMAIL 예외 발생`() {
-            val request = SignUpRequest(email = "test@test.com", password = "password1!", name = "홍길동")
+            val request = signUpRequest()
 
             every { userRepository.existsByEmail(request.email) } returns true
 
@@ -72,10 +87,37 @@ class UserServiceTest {
         }
 
         @Test
-        fun `passwordEncoder가 null 반환 시 INTERNAL_SERVER_ERROR 예외 발생`() {
-            val request = SignUpRequest(email = "test@test.com", password = "password1!", name = "홍길동")
+        fun `아이디 중복 시 DUPLICATE_USERNAME 예외 발생`() {
+            val request = signUpRequest()
 
             every { userRepository.existsByEmail(request.email) } returns false
+            every { userRepository.existsByUsername(request.username) } returns true
+
+            val exception = assertThrows<CustomException> { userService.signUp(request) }
+            assertEquals(ErrorCode.DUPLICATE_USERNAME, exception.errorCode)
+            verify(exactly = 0) { userRepository.save(any()) }
+        }
+
+        @Test
+        fun `전화번호 중복 시 DUPLICATE_PHONE 예외 발생`() {
+            val request = signUpRequest()
+
+            every { userRepository.existsByEmail(request.email) } returns false
+            every { userRepository.existsByUsername(request.username) } returns false
+            every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns true
+
+            val exception = assertThrows<CustomException> { userService.signUp(request) }
+            assertEquals(ErrorCode.DUPLICATE_PHONE, exception.errorCode)
+            verify(exactly = 0) { userRepository.save(any()) }
+        }
+
+        @Test
+        fun `passwordEncoder가 null 반환 시 INTERNAL_SERVER_ERROR 예외 발생`() {
+            val request = signUpRequest()
+
+            every { userRepository.existsByEmail(request.email) } returns false
+            every { userRepository.existsByUsername(request.username) } returns false
+            every { userRepository.existsByPhoneNumber(request.phoneNumber) } returns false
             every { passwordEncoder.encode(request.password) } returns null
 
             val exception = assertThrows<CustomException> { userService.signUp(request) }
@@ -94,7 +136,7 @@ class UserServiceTest {
             val token = "jwt.token.value"
 
             every { userRepository.findByEmail(request.email) } returns user
-            every { passwordEncoder.matches(request.password, user.password) } returns true
+            every { passwordEncoder.matches(request.password, "encoded_password") } returns true
             every { jwtProvider.generateToken(user) } returns token
 
             val result = userService.signIn(request)
@@ -119,7 +161,22 @@ class UserServiceTest {
             val user = createUser()
 
             every { userRepository.findByEmail(request.email) } returns user
-            every { passwordEncoder.matches(request.password, user.password) } returns false
+            every { passwordEncoder.matches(request.password, "encoded_password") } returns false
+
+            val exception = assertThrows<CustomException> { userService.signIn(request) }
+            assertEquals(ErrorCode.INVALID_CREDENTIALS, exception.errorCode)
+        }
+
+        @Test
+        fun `password가 null인 사용자 로그인 시 INVALID_CREDENTIALS 예외 발생`() {
+            val request = SignInRequest(email = "oauth@test.com", password = "any_password")
+            val oauthUser = User(
+                email = "oauth@test.com",
+                password = null,
+                name = "OAuth 사용자",
+            )
+
+            every { userRepository.findByEmail(request.email) } returns oauthUser
 
             val exception = assertThrows<CustomException> { userService.signIn(request) }
             assertEquals(ErrorCode.INVALID_CREDENTIALS, exception.errorCode)
@@ -164,6 +221,31 @@ class UserServiceTest {
             val result = userService.updateProfile(1L, request)
 
             assertEquals("김철수", result.name)
+        }
+
+        @Test
+        fun `username 변경 시 중복 검사 후 업데이트`() {
+            val user = createUser(id = 1L)
+            val request = UpdateProfileRequest(name = "홍길동", username = "newuser1")
+
+            every { userRepository.findById(1L) } returns Optional.of(user)
+            every { userRepository.existsByUsername("newuser1") } returns false
+
+            val result = userService.updateProfile(1L, request)
+
+            assertEquals("newuser1", result.username)
+        }
+
+        @Test
+        fun `username 중복 시 DUPLICATE_USERNAME 예외 발생`() {
+            val user = createUser(id = 1L)
+            val request = UpdateProfileRequest(name = "홍길동", username = "takenuser")
+
+            every { userRepository.findById(1L) } returns Optional.of(user)
+            every { userRepository.existsByUsername("takenuser") } returns true
+
+            val exception = assertThrows<CustomException> { userService.updateProfile(1L, request) }
+            assertEquals(ErrorCode.DUPLICATE_USERNAME, exception.errorCode)
         }
 
         @Test
