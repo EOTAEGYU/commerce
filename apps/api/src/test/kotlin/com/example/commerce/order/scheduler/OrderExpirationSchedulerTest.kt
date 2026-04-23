@@ -44,10 +44,10 @@ class OrderExpirationSchedulerTest {
     inner class ExpireOrders {
 
         @Test
-        fun `만료된 주문이 있으면 expireSingleOrder 호출`() {
+        fun `만료된 주문이 있으면 재고 복원 후 CANCELLED 처리`() {
             val expiredOrder = createExpiredOrder()
             every {
-                orderRepository.findByStatusAndCreatedAtBefore(any(), any())
+                orderRepository.findExpiredOrdersWithItems(any(), any())
             } returns listOf(expiredOrder)
 
             val product = Product(name = "테스트", price = 10000L, categoryId = 1L, id = 1L)
@@ -63,39 +63,12 @@ class OrderExpirationSchedulerTest {
         @Test
         fun `만료된 주문이 없으면 아무 처리 없음`() {
             every {
-                orderRepository.findByStatusAndCreatedAtBefore(any(), any())
+                orderRepository.findExpiredOrdersWithItems(any(), any())
             } returns emptyList()
 
             scheduler.expireOrders()
 
             verify(exactly = 0) { productOptionRepository.findByIdWithLock(any()) }
-        }
-    }
-
-    @Nested
-    inner class ExpireSingleOrder {
-
-        @Test
-        fun `단일 주문 만료 시 재고 복원 및 CANCELLED 처리`() {
-            val order = createExpiredOrder()
-            val product = Product(name = "테스트", price = 10000L, categoryId = 1L, id = 1L)
-            val option = ProductOption(product = product, size = "M", color = "블랙", stock = 8, id = 1L)
-            every { productOptionRepository.findByIdWithLock(1L) } returns option
-
-            scheduler.expireSingleOrder(order)
-
-            assertEquals(OrderStatus.CANCELLED, order.status)
-            assertEquals(10, option.stock) // 8 + 2
-        }
-
-        @Test
-        fun `옵션 조회 실패 시 해당 아이템 건너뜀`() {
-            val order = createExpiredOrder()
-            every { productOptionRepository.findByIdWithLock(1L) } returns null
-
-            scheduler.expireSingleOrder(order)
-
-            assertEquals(OrderStatus.CANCELLED, order.status)
         }
     }
 }

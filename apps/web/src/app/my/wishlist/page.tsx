@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { apiFetch, ApiError } from '@/lib/api/client'
 import { useAuthStore } from '@/store/auth'
+import type { PageResponse } from '@/types/api'
 
 // ── 타입 ──────────────────────────────────────────────────────────────────────
 
@@ -141,7 +142,7 @@ export default function WishlistPage() {
   // 찜한 상품 목록 조회
   const { data, isLoading, error } = useQuery({
     queryKey: ['my-likes'],
-    queryFn: () => apiFetch<LikedProduct[]>('/api/likes/my'),
+    queryFn: () => apiFetch<PageResponse<LikedProduct>>('/api/likes/my'),
     enabled: !!user,
   })
 
@@ -173,7 +174,7 @@ export default function WishlistPage() {
   }
 
   // 필터링 로직
-  const items = data ?? []
+  const items = data?.content ?? []
   const filteredItems = items.filter((item) => {
     if (filterType === 'inStock') return !item.isSoldOut
     if (filterType === 'onSale') return item.salePrice != null && item.salePrice < item.price
