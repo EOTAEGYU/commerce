@@ -4,6 +4,9 @@ import com.example.commerce.common.CustomException
 import com.example.commerce.common.ErrorCode
 import com.example.commerce.common.security.JwtProvider
 import com.example.commerce.common.security.SecurityConfig
+import com.example.commerce.common.security.oauth2.CustomOAuth2UserService
+import com.example.commerce.common.security.oauth2.OAuth2FailureHandler
+import com.example.commerce.common.security.oauth2.OAuth2SuccessHandler
 import com.example.commerce.settlement.dto.SettlementCreateRequest
 import com.example.commerce.settlement.dto.SettlementResponse
 import com.example.commerce.settlement.dto.SettlementStatsResponse
@@ -43,6 +46,9 @@ class AdminSettlementControllerTest {
 
     @MockitoBean lateinit var settlementService: SettlementService
     @MockitoBean lateinit var jwtProvider: JwtProvider
+    @MockitoBean lateinit var customOAuth2UserService: CustomOAuth2UserService
+    @MockitoBean lateinit var oauth2SuccessHandler: OAuth2SuccessHandler
+    @MockitoBean lateinit var oauth2FailureHandler: OAuth2FailureHandler
 
     private val now = LocalDateTime.of(2026, 4, 19, 12, 0, 0)
     private val yesterday = LocalDate.of(2026, 4, 18)

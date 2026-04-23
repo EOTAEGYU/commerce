@@ -3,6 +3,9 @@ package com.example.commerce.user.controller
 import com.example.commerce.common.CustomException
 import com.example.commerce.common.ErrorCode
 import com.example.commerce.common.security.JwtProvider
+import com.example.commerce.common.security.oauth2.CustomOAuth2UserService
+import com.example.commerce.common.security.oauth2.OAuth2FailureHandler
+import com.example.commerce.common.security.oauth2.OAuth2SuccessHandler
 import com.example.commerce.user.dto.AuthResponse
 import com.example.commerce.user.dto.SignInRequest
 import com.example.commerce.user.dto.SignUpRequest
@@ -39,6 +42,9 @@ class UserControllerTest {
 
     @MockitoBean lateinit var userService: UserService
     @MockitoBean lateinit var jwtProvider: JwtProvider
+    @MockitoBean lateinit var customOAuth2UserService: CustomOAuth2UserService
+    @MockitoBean lateinit var oauth2SuccessHandler: OAuth2SuccessHandler
+    @MockitoBean lateinit var oauth2FailureHandler: OAuth2FailureHandler
 
     private val userResponse = UserResponse(
         id = 1L,
