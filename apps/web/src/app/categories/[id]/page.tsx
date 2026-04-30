@@ -43,7 +43,7 @@ function findParentCategory(
   childId: number
 ): CategoryResponse | undefined {
   for (const cat of categories) {
-    if (cat.children?.some((c) => c.id === childId)) return cat
+    if ((cat.children as CategoryResponse[] | undefined)?.some((c) => c.id === childId)) return cat
   }
   return undefined
 }

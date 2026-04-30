@@ -59,3 +59,10 @@ jwt:
 
 app:
   frontend-url: ${FRONTEND_URL:http://localhost:3000}
+
+pg:
+  kakao:
+    secret-key: ${KAKAO_PAY_SECRET_KEY:DEV_TEST_KEY}
+    cid: ${KAKAO_PAY_CID:TC0ONETIME}
+  toss:
+    secret-key: ${TOSS_SECRET_KEY:test_sk_zXLkKEypNArWmo50nX3lmeaxYG5R}

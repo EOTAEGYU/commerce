@@ -7,7 +7,10 @@ import ProductLikeSection from '@/components/products/ProductLikeSection'
 import Accordion from '@/components/products/Accordion'
 import type { components } from '@/types/api'
 
-type ProductResponse = components['schemas']['ProductResponse']
+type ProductResponse = components['schemas']['ProductResponse'] & {
+  averageRating?: number
+  reviewCount?: number
+}
 
 type Props = {
   params: Promise<{ id: string }>
