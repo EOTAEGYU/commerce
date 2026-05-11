@@ -8,7 +8,12 @@
 
 3. 테스트가 전체 통과하면:
    - `git diff HEAD` 와 `git status` 로 변경 내용을 분석하라.
-   - Conventional Commits 규칙 (feat / fix / refactor / test / chore) 에 맞는 커밋 메시지를 자동 생성하라.
+   - 변경된 파일 범위에 따라 관련 문서를 업데이트하라:
+     - 백엔드 도메인(`src/main/kotlin/…`) 변경 → 해당 도메인 `CLAUDE.md` (엔드포인트·비즈니스 규칙)
+     - 프론트엔드(`apps/web/src/`) 변경 → `apps/web/CLAUDE.md` (컴포넌트 설명·폴더 구조)
+     - 아키텍처·DB·공통 규칙 변경 → `docs/` 하위 해당 문서
+     - 이미 정확하게 기술된 내용은 수정하지 않는다
+   - Conventional Commits 규칙 (feat / fix / refactor / test / chore / docs) 에 맞는 커밋 메시지를 자동 생성하라.
    - `git add -A` → `git commit` → `git push -u origin HEAD` 를 순서대로 실행하라.
 
 4. push 완료 후 현재 브랜치가 `feature/` 로 시작하면 PR을 생성하고 merge한다:

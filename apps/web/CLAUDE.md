@@ -60,7 +60,7 @@ src/
 │   │   └── AddToCartButton.tsx    # 장바구니 담기 mutation (클라이언트)
 │   ├── cart/
 │   │   └── CartItemRow.tsx        # 장바구니 아이템 행 (클라이언트)
-│   ├── Header.tsx         # 상단 네비 + SearchOverlay 통합 (카테고리 GNB → /categories/[id])
+│   ├── Header.tsx         # 2-row 헤더: Row1(검색바·로고중앙·인증링크) + Row2(카테고리바 hover 드롭다운)
 │   └── Footer.tsx         # 하단 바
 ├── __tests__/             # 단위 테스트 (Jest + @testing-library/react)
 │   ├── Breadcrumb.test.tsx
