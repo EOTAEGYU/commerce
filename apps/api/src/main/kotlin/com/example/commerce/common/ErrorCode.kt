@@ -41,6 +41,10 @@ enum class ErrorCode(
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 결제 내역입니다."),
     ORDER_NOT_PAYABLE(HttpStatus.CONFLICT, "결제할 수 없는 주문 상태입니다."),
     ORDER_ALREADY_PAID(HttpStatus.CONFLICT, "이미 결제된 주문입니다."),
+    PG_CONNECTION_FAILED(HttpStatus.BAD_GATEWAY, "결제 서비스 연결에 실패했습니다."),
+    PG_PAYMENT_FAILED(HttpStatus.BAD_REQUEST, "PG 결제 승인에 실패했습니다."),
+    PG_SESSION_NOT_FOUND(HttpStatus.NOT_FOUND, "결제 세션을 찾을 수 없습니다."),
+    PG_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, "결제 금액이 일치하지 않습니다."),
 
     // Order Item
     ORDER_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주문 항목입니다."),
