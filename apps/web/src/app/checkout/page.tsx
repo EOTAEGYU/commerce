@@ -35,7 +35,7 @@ export default function CheckoutPage() {
   // 결제 옵션 상태
   const [selectedCouponId, setSelectedCouponId] = useState<number | null>(null)
   const [pointAmount, setPointAmount] = useState(0)
-  const [paymentMethod, setPaymentMethod] = useState<'CARD' | 'BANK_TRANSFER'>('CARD')
+  const [paymentMethod, setPaymentMethod] = useState<'CARD' | 'BANK_TRANSFER' | 'KAKAO_PAY' | 'TOSS_PAY'>('KAKAO_PAY')
 
   // 제출 상태
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -111,7 +111,53 @@ export default function CheckoutPage() {
     setSubmitError('')
 
     try {
-      // 1. 주문 생성
+      // 카카오페이 분기
+      if (paymentMethod === 'KAKAO_PAY') {
+        const order = await apiFetch<OrderResponse>('/api/orders', { method: 'POST' })
+        const kakaoRes = await apiFetch<{ nextRedirectPcUrl: string; orderId: number }>(
+          '/api/payments/kakao/ready',
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              orderId: order.id,
+              couponId: selectedCouponId,
+              pointAmount: pointAmount > 0 ? pointAmount : undefined,
+            }),
+          }
+        )
+        window.location.href = kakaoRes.nextRedirectPcUrl
+        return
+      }
+
+      // 토스페이먼츠 분기
+      if (paymentMethod === 'TOSS_PAY') {
+        const order = await apiFetch<OrderResponse>('/api/orders', { method: 'POST' })
+        const tossRes = await apiFetch<{ amount: number; orderId: number; orderName: string }>(
+          '/api/payments/toss/ready',
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              orderId: order.id,
+              couponId: selectedCouponId,
+              pointAmount: pointAmount > 0 ? pointAmount : undefined,
+            }),
+          }
+        )
+        const { loadTossPayments } = await import('@tosspayments/tosspayments-sdk')
+        const tossPayments = await loadTossPayments('test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eml')
+        const payment = tossPayments.payment({ customerKey: `user-${order.id}` })
+        await payment.requestPayment({
+          method: 'CARD',
+          amount: { currency: 'KRW', value: tossRes.amount },
+          orderId: tossRes.orderId.toString(),
+          orderName: tossRes.orderName,
+          successUrl: `${window.location.origin}/payment/toss/success`,
+          failUrl: `${window.location.origin}/payment/toss/fail`,
+        })
+        return
+      }
+
+      // 1. 주문 생성 (CARD / BANK_TRANSFER)
       const order = await apiFetch<OrderResponse>('/api/orders', { method: 'POST' })
       // 2. 결제 실행
       await apiFetch('/api/payments', {
@@ -290,25 +336,51 @@ export default function CheckoutPage() {
           {/* ③ 결제 수단 섹션 */}
           <section className="rounded-lg border border-zinc-200 p-5">
             <h2 className="mb-4 text-base font-semibold text-zinc-900">결제 수단</h2>
-            <div className="flex gap-3">
+            <div className="grid grid-cols-2 gap-2">
+              {/* 카카오페이 */}
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('KAKAO_PAY')}
+                className={`py-3 px-4 rounded-lg border-2 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+                  paymentMethod === 'KAKAO_PAY'
+                    ? 'border-yellow-400 bg-yellow-50 text-yellow-800'
+                    : 'border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300'
+                }`}
+              >
+                <span className="text-base">💛</span> 카카오페이
+              </button>
+              {/* 토스페이먼츠 */}
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('TOSS_PAY')}
+                className={`py-3 px-4 rounded-lg border-2 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
+                  paymentMethod === 'TOSS_PAY'
+                    ? 'border-blue-400 bg-blue-50 text-blue-800'
+                    : 'border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300'
+                }`}
+              >
+                <span className="text-base">💙</span> 토스페이
+              </button>
+              {/* 신용/체크카드 */}
               <button
                 type="button"
                 onClick={() => setPaymentMethod('CARD')}
-                className={`flex-1 rounded-lg py-3 text-sm font-medium transition-colors ${
+                className={`py-3 px-4 rounded-lg border-2 text-sm font-medium transition-colors ${
                   paymentMethod === 'CARD'
-                    ? 'bg-zinc-900 text-white'
-                    : 'border border-zinc-300 text-zinc-700 hover:bg-zinc-50'
+                    ? 'border-zinc-900 bg-zinc-900 text-white'
+                    : 'border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300'
                 }`}
               >
                 신용/체크카드
               </button>
+              {/* 계좌이체 */}
               <button
                 type="button"
                 onClick={() => setPaymentMethod('BANK_TRANSFER')}
-                className={`flex-1 rounded-lg py-3 text-sm font-medium transition-colors ${
+                className={`py-3 px-4 rounded-lg border-2 text-sm font-medium transition-colors ${
                   paymentMethod === 'BANK_TRANSFER'
-                    ? 'bg-zinc-900 text-white'
-                    : 'border border-zinc-300 text-zinc-700 hover:bg-zinc-50'
+                    ? 'border-zinc-900 bg-zinc-900 text-white'
+                    : 'border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300'
                 }`}
               >
                 계좌이체

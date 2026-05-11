@@ -95,7 +95,7 @@ function productToForm(p: ProductResponse): ProductFormData {
     price: String(p.price ?? ''),
     categoryId: String(p.categoryId ?? ''),
     imageUrl: p.imageUrl ?? '',
-    options: (p.options ?? []).map((o: ProductOptionRequest) => ({ size: o.size ?? '', color: o.color ?? '', stock: o.stock ?? 0 })),
+    options: (p.options ?? []).map((o) => ({ size: o.size ?? '', color: o.color ?? '', stock: o.stock ?? 0 })),
   }
 }
 
