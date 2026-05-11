@@ -19,7 +19,20 @@
       "Bash(gh pr list *)",
       "Bash(npm run build *)",
       "Bash(npm run lint *)",
-      "Bash(npx tsc *)"
+      "Bash(npm run dev)",
+      "Bash(npm run dev *)",
+      "Bash(npx tsc *)",
+      "Bash(npx jest *)",
+      "Bash(cd apps/web && npm run build)",
+      "Bash(cd apps/web && npm run dev)",
+      "Bash(cd apps/web && npm run lint)",
+      "Bash(cd apps/web && npx tsc *)",
+      "Bash(cd apps/web && npx jest *)",
+      "Bash(git -C * add *)",
+      "Bash(git -C * commit *)",
+      "Bash(git -C * push *)",
+      "Bash(git -C * status)",
+      "Bash(git -C * diff *)"
     ]
   },
   "enabledMcpjsonServers": [

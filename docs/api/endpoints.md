@@ -6,9 +6,21 @@
 
 | Method | URL | 인증 | 설명 |
 |--------|-----|------|------|
+| GET | `/api/users/check/username` | 불필요 | 아이디 중복 확인 |
 | POST | `/api/users/signup` | 불필요 | 회원가입 |
 | POST | `/api/users/signin` | 불필요 | 로그인 → JWT 반환 |
 | GET | `/api/users/me` | **필요** | 내 프로필 조회 |
+| PUT | `/api/users/me` | **필요** | 내 프로필 수정 |
+
+### GET /api/users/check/username?value={username}
+```json
+// Response 200
+{
+  "success": true,
+  "data": { "available": true },
+  "error": null
+}
+```
 
 ### POST /api/users/signup
 ```json
@@ -16,13 +28,19 @@
 {
   "email": "user@example.com",
   "password": "password123",
-  "name": "홍길동"
+  "name": "홍길동",
+  "username": "hong1234",
+  "phoneNumber": "010-1234-5678",
+  "birthDate": "1995-08-15"
 }
 
 // Response 201
 {
   "success": true,
-  "data": { "id": 1, "email": "user@example.com", "name": "홍길동", "role": "USER" },
+  "data": {
+    "id": 1, "email": "user@example.com", "name": "홍길동", "role": "USER",
+    "username": "hong1234", "phoneNumber": "010-1234-5678", "birthDate": "1995-08-15"
+  },
   "error": null
 }
 ```
@@ -30,7 +48,7 @@
 ### POST /api/users/signin
 ```json
 // Request
-{ "email": "user@example.com", "password": "password123" }
+{ "username": "hong1234", "password": "password123" }
 
 // Response 200
 {

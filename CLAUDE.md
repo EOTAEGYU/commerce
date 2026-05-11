@@ -67,6 +67,11 @@ src/main/kotlin/com/example/commerce/
   ```
 - 기능 구현 완료 시 반드시 커밋까지 진행
 - 커밋 전 빌드/타입 체크 성공 확인
+- **커밋 전 문서 최신화 (IMPORTANT)**: 변경 내용에 따라 아래 문서를 업데이트한다
+  - 백엔드 도메인 변경 → 해당 도메인의 `CLAUDE.md` (엔드포인트/비즈니스 규칙 변경 반영)
+  - 프론트엔드 변경 → `apps/web/CLAUDE.md` (컴포넌트 설명, 폴더 구조 변경 반영)
+  - 아키텍처/DB/API 규칙 변경 → `docs/` 하위 해당 문서
+  - 커밋 메시지에 `docs:` 타입으로 문서 변경을 별도 커밋하거나 기능 커밋에 포함시킨다
 - **작업 완료 후**: `dev` 브랜치로 PR을 생성하고 merge한다
   ```bash
   gh pr create --base dev --title "..." --body "..."
